@@ -1,96 +1,96 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 
 /**
-* Add Formula Character Event Wish History
+* Add Formula Character Event Warp History
 */
-function addFormulaCharacterEventWishHistory() {
-  addFormulaByWishHistoryName(WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME);
+function addFormulaCharacterEventWarpHistory() {
+  addFormulaByWarpHistoryName(WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME);
 }
 /**
-* Add Formula Permanent Wish History History
+* Add Formula Regular Warp History History
 */
-function addFormulaPermanentWishHistory() {
-  addFormulaByWishHistoryName(WISH_TALLY_PERMANENT_WISH_SHEET_NAME);
+function addFormulaRegularWarpHistory() {
+  addFormulaByWarpHistoryName(WARP_TALLY_REGULAR_WARP_SHEET_NAME);
 }
 /**
-* Add Formula Weapon Event Wish History
+* Add Formula Light Cone Event Warp History
 */
-function addFormulaWeaponEventWishHistory() {
-  addFormulaByWishHistoryName(WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME);
+function addFormulaLightconeEventWarpHistory() {
+  addFormulaByWarpHistoryName(WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME);
 }
 /**
-* Add Formula Novice Wish History
+* Add Formula Beginner Warp History
 */
-function addFormulaNoviceWishHistory() {
-  addFormulaByWishHistoryName(WISH_TALLY_NOVICE_WISH_SHEET_NAME);
+function addFormulaBeginnerWarpHistory() {
+  addFormulaByWarpHistoryName(WARP_TALLY_BEGINNER_WARP_SHEET_NAME);
 }
 
 /**
-* Add Formula for selected Wish History sheet
+* Add Formula for selected Warp History sheet
 */
-function addFormulaWishHistory() {
+function addFormulaWarpHistory() {
   var sheetActive = SpreadsheetApp.getActiveSpreadsheet();
-  var wishHistoryName = sheetActive.getSheetName();
-  if (WISH_TALLY_NAME_OF_WISH_HISTORY.indexOf(wishHistoryName) != -1) {
-    addFormulaByWishHistoryName(wishHistoryName);
+  var warpHistoryName = sheetActive.getSheetName();
+  if (WARP_TALLY_NAME_OF_WARP_HISTORY.indexOf(warpHistoryName) != -1) {
+    addFormulaByWarpHistoryName(warpHistoryName);
   } else {
-    var message = 'Sheet must be called "' + WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME + '" or "' + WISH_TALLY_PERMANENT_WISH_SHEET_NAME + '" or "' + WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME + '" or "' + WISH_TALLY_NOVICE_WISH_SHEET_NAME + '"';
+    var message = 'Sheet must be called "' + WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME + '" or "' + WARP_TALLY_REGULAR_WARP_SHEET_NAME + '" or "' + WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME + '" or "' + WARP_TALLY_BEGINNER_WARP_SHEET_NAME + '"';
     var title = 'Invalid Sheet Name';
     SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
   }
 }
 
-function addFormulaByWishHistoryName(name) {
+function addFormulaByWarpHistoryName(name) {
   var sheetSource = getSourceDocument();
   if (sheetSource) {
     // Add Language
-    var wishHistorySource;
+    var warpHistorySource;
     var settingsSheet = getSettingsSheet();
     if (settingsSheet) {
       var languageFound = settingsSheet.getRange(2, 2).getValue();
-      wishHistorySource = sheetSource.getSheetByName(WISH_TALLY_WISH_HISTORY_SHEET_NAME+"-"+languageFound);
+      warpHistorySource = sheetSource.getSheetByName(WARP_TALLY_WARP_HISTORY_SHEET_NAME+"-"+languageFound);
     }
-    if (wishHistorySource) {
+    if (warpHistorySource) {
       // Found language
     } else {
       // Default
-      wishHistorySource = sheetSource.getSheetByName(WISH_TALLY_WISH_HISTORY_SHEET_NAME);
+      warpHistorySource = sheetSource.getSheetByName(WARP_TALLY_WARP_HISTORY_SHEET_NAME);
     }
-    var sheet = findWishHistoryByName(name,sheetSource);
+    var sheet = findWarpHistoryByName(name,sheetSource);
     sheet.getRange("A1").setFontColor("white").setValue(name);
-    var wishHistorySourceNumberOfColumn = wishHistorySource.getLastColumn();
+    var warpHistorySourceNumberOfColumn = warpHistorySource.getLastColumn();
     // Reduce two column due to paste and override
-    var wishHistorySourceNumberOfColumnWithFormulas = wishHistorySourceNumberOfColumn - 2;
+    var warpHistorySourceNumberOfColumnWithFormulas = warpHistorySourceNumberOfColumn - 2;
 
     var lastRowWithoutTitle = sheet.getMaxRows() - 1;
 
     var currentOverrideTitleCell = sheet.getRange(1, 2).getValue();
-    var sourceOverrideTitleCell = wishHistorySource.getRange(1, 2).getValue();
+    var sourceOverrideTitleCell = warpHistorySource.getRange(1, 2).getValue();
     if (currentOverrideTitleCell != sourceOverrideTitleCell) {
       // If override column don't exist, populate from source
-      var overrideCells = wishHistorySource.getRange(2, 2).getFormula();
+      var overrideCells = warpHistorySource.getRange(2, 2).getFormula();
       sheet.getRange(2, 2, lastRowWithoutTitle, 1).setValue(overrideCells);
       sheet.getRange(1, 2).setValue(sourceOverrideTitleCell);
-      sheet.setColumnWidth(2, wishHistorySource.getColumnWidth(2));
+      sheet.setColumnWidth(2, warpHistorySource.getColumnWidth(2));
     }
     
     // Get second row formula columns and set current sheet
-    var formulaCells = wishHistorySource.getRange(2, 3, 1, wishHistorySourceNumberOfColumnWithFormulas).getFormulas();
-    sheet.getRange(2, 3, lastRowWithoutTitle, wishHistorySourceNumberOfColumnWithFormulas).setValue(formulaCells);
+    var formulaCells = warpHistorySource.getRange(2, 3, 1, warpHistorySourceNumberOfColumnWithFormulas).getFormulas();
+    sheet.getRange(2, 3, lastRowWithoutTitle, warpHistorySourceNumberOfColumnWithFormulas).setValue(formulaCells);
 
     // Get title columns and set current sheet
-    var titleCells = wishHistorySource.getRange(1, 3, 1, wishHistorySourceNumberOfColumnWithFormulas).getFormulas();
-    sheet.getRange(1, 3, 1, wishHistorySourceNumberOfColumnWithFormulas).setValues(titleCells);
+    var titleCells = warpHistorySource.getRange(1, 3, 1, warpHistorySourceNumberOfColumnWithFormulas).getFormulas();
+    sheet.getRange(1, 3, 1, warpHistorySourceNumberOfColumnWithFormulas).setValues(titleCells);
 
-    for (var i = 3; i <= wishHistorySourceNumberOfColumn; i++) {
+    for (var i = 3; i <= warpHistorySourceNumberOfColumn; i++) {
       // Apply formatting for cells
-      var numberFormatCell = wishHistorySource.getRange(2, i).getNumberFormat();
+      var numberFormatCell = warpHistorySource.getRange(2, i).getNumberFormat();
       sheet.getRange(2, i, lastRowWithoutTitle, 1).setNumberFormat(numberFormatCell);
       // Set column width from source
-      sheet.setColumnWidth(i, wishHistorySource.getColumnWidth(i));
+      sheet.setColumnWidth(i, warpHistorySource.getColumnWidth(i));
     }
 
     // Ensure new row is not the same height as first, if row 2 did not exist
@@ -105,67 +105,67 @@ function addFormulaByWishHistoryName(name) {
 /**
 * Check is sheet exist in active spreadsheet, otherwise pull sheet from source
 */
-function findWishHistoryByName(name, sheetSource) {
-  var wishHistorySheet = SpreadsheetApp.getActive().getSheetByName(name);
-  if (wishHistorySheet == null) {
+function findWarpHistoryByName(name, sheetSource) {
+  var warpHistorySheet = SpreadsheetApp.getActive().getSheetByName(name);
+  if (warpHistorySheet == null) {
     if (sheetSource == null) {
       sheetSource = getSourceDocument();
     }
     if (sheetSource) {
-      var sheetCopySource = sheetSource.getSheetByName(WISH_TALLY_WISH_HISTORY_SHEET_NAME);
+      var sheetCopySource = sheetSource.getSheetByName(WARP_TALLY_WARP_HISTORY_SHEET_NAME);
       sheetCopySource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(name);
-      wishHistorySheet = SpreadsheetApp.getActive().getSheetByName(name);
-      wishHistorySheet.showSheet();
+      warpHistorySheet = SpreadsheetApp.getActive().getSheetByName(name);
+      warpHistorySheet.showSheet();
     }
   }
-  return wishHistorySheet;
+  return warpHistorySheet;
 }
 
 /**
-* Add sort for selected Wish History sheet
+* Add sort for selected Warp History sheet
 */
-function sortWishHistory() {
+function sortWarpHistory() {
   var sheetActive = SpreadsheetApp.getActiveSpreadsheet();
-  var wishHistoryName = sheetActive.getSheetName();
-  if (WISH_TALLY_NAME_OF_WISH_HISTORY.indexOf(wishHistoryName) != -1) {
-    sortWishHistoryByName(wishHistoryName);
+  var warpHistoryName = sheetActive.getSheetName();
+  if (WARP_TALLY_NAME_OF_WARP_HISTORY.indexOf(warpHistoryName) != -1) {
+    sortWarpHistoryByName(warpHistoryName);
   } else {
-    var message = 'Sheet must be called "' + WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME + '" or "' + WISH_TALLY_PERMANENT_WISH_SHEET_NAME + '" or "' + WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME + '" or "' + WISH_TALLY_NOVICE_WISH_SHEET_NAME + '"';
+    var message = 'Sheet must be called "' + WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME + '" or "' + WARP_TALLY_REGULAR_WARP_SHEET_NAME + '" or "' + WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME + '" or "' + WARP_TALLY_BEGINNER_WARP_SHEET_NAME + '"';
     var title = 'Invalid Sheet Name';
     SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
   }
 }
 
 /**
-* Sort Character Event Wish History
+* Sort Character Event Warp History
 */
-function sortCharacterEventWishHistory() {
-  sortWishHistoryByName(WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME);
+function sortCharacterEventWarpHistory() {
+  sortWarpHistoryByName(WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME);
 }
 
 /**
-* Sort Permanent Wish History
+* Sort Regular Warp History
 */
-function sortPermanentWishHistory() {
-  sortWishHistoryByName(WISH_TALLY_PERMANENT_WISH_SHEET_NAME);
+function sortRegularWarpHistory() {
+  sortWarpHistoryByName(WARP_TALLY_REGULAR_WARP_SHEET_NAME);
 }
 
 /**
-* Sort Weapon Event Wish History
+* Sort Light Cone Event Warp History
 */
-function sortWeaponEventWishHistory() {
-  sortWishHistoryByName(WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME);
+function sortLightconeEventWarpHistory() {
+  sortWarpHistoryByName(WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME);
 }
 
 /**
-* Sort Novice Wish History
+* Sort Beginner Warp History
 */
-function sortNoviceWishHistory() {
-  sortWishHistoryByName(WISH_TALLY_NOVICE_WISH_SHEET_NAME);
+function sortBeginnerWarpHistory() {
+  sortWarpHistoryByName(WARP_TALLY_BEGINNER_WARP_SHEET_NAME);
 }
 
-function sortWishHistoryByName(sheetName) {
-  var sheet = findWishHistoryByName(sheetName, null);
+function sortWarpHistoryByName(sheetName) {
+  var sheet = findWarpHistoryByName(sheetName, null);
   if (sheet) {
     if (sheet.getLastColumn() > 6) {
       var range = sheet.getRange(2, 1, sheet.getMaxRows()-1, sheet.getLastColumn());

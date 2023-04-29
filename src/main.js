@@ -1,6 +1,6 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 var dashboardEditRange = [
   "I5", // Status cell
@@ -19,12 +19,12 @@ var dashboardRefreshRange = [
   "G15", // Character 5-Star
   "G16", // Character 4-Star
   "K16", // Character Total
-  "G20", // Permanent 5-Star
-  "G21", // Permanent 4-Star
-  "K21", // Permanent Total
-  "G25", // Weapon 5-Star
-  "G26", // Weapon 4-Star
-  "K26" // Weapon Total
+  "G20", // Regular 5-Star
+  "G21", // Regular 4-Star
+  "K21", // Regular Total
+  "G25", // Light Cone 5-Star
+  "G26", // Light Cone 4-Star
+  "K26" // Light Cone Total
 ];
 
 /**
@@ -142,26 +142,26 @@ function restoreEventsSettings(sheetEvents, settingsSheet) {
   }
 }
 
-function saveCollectionSettings(constellationsSheet, settingsSheet, itemsRange, optionsRange) {
-  var maxColumns = constellationsSheet.getMaxColumns();
+function saveCollectionSettings(eidolonsSheet, settingsSheet, itemsRange, optionsRange) {
+  var maxColumns = eidolonsSheet.getMaxColumns();
 
   var saveData = [];
-  var columnValue = constellationsSheet.getRange(1, 2).getValue();
+  var columnValue = eidolonsSheet.getRange(1, 2).getValue();
 
   if (columnValue > 0) {
-    var startValue = constellationsSheet.getRange(1, columnValue).getValue();
-    var nextValue = constellationsSheet.getRange(1, columnValue+1).getValue();
-    var userInputColumnValue = constellationsSheet.getRange(1, columnValue+2).getValue();
-    var saveRowsValue = constellationsSheet.getRange(1, columnValue+4).getValue();
-    var startSaveRowValue = constellationsSheet.getRange(1, 11).getValue();
+    var startValue = eidolonsSheet.getRange(1, columnValue).getValue();
+    var nextValue = eidolonsSheet.getRange(1, columnValue+1).getValue();
+    var userInputColumnValue = eidolonsSheet.getRange(1, columnValue+2).getValue();
+    var saveRowsValue = eidolonsSheet.getRange(1, columnValue+4).getValue();
+    var startSaveRowValue = eidolonsSheet.getRange(1, 11).getValue();
     if (startSaveRowValue == ""||  startSaveRowValue <= 0) {
       startSaveRowValue = 16;
     }
     for (var c = startValue; c <= maxColumns; c += nextValue) {
-      var nameValue = constellationsSheet.getRange(1, c).getValue();
+      var nameValue = eidolonsSheet.getRange(1, c).getValue();
       if (nameValue != "") {
         var dataUserInput = nameValue;
-        var saveValues = constellationsSheet.getRange(startSaveRowValue, c - userInputColumnValue,saveRowsValue,1).getValues();
+        var saveValues = eidolonsSheet.getRange(startSaveRowValue, c - userInputColumnValue,saveRowsValue,1).getValues();
         var isDataAvailableToSave = false;
         for (var s = 0; s < saveValues.length; s++) {
           var saveValue = saveValues[s];
@@ -179,17 +179,17 @@ function saveCollectionSettings(constellationsSheet, settingsSheet, itemsRange, 
       settingsSheet.getRange(itemsRange).setValue(saveData.join(","));
     }
   }
-  var contentValue = constellationsSheet.getRange(1, 1).getValue();
+  var contentValue = eidolonsSheet.getRange(1, 1).getValue();
   if (contentValue > 0) {
-    var lengthValue = constellationsSheet.getRange(contentValue+2, 1).getValue();
+    var lengthValue = eidolonsSheet.getRange(contentValue+2, 1).getValue();
     if (lengthValue > 0) {
-      saveData = constellationsSheet.getRange(contentValue+3, 1,lengthValue,1).getValues();
+      saveData = eidolonsSheet.getRange(contentValue+3, 1,lengthValue,1).getValues();
       settingsSheet.getRange(optionsRange).setValue(saveData.join(","));
     }
   }
 }
 
-function restoreCollectionSettings(constellationsSheet, settingsSheet, itemsRange, optionsRange) {
+function restoreCollectionSettings(eidolonsSheet, settingsSheet, itemsRange, optionsRange) {
   var saveData = settingsSheet.getRange(itemsRange).getValue().split(",");
   var saveDict = [];
   var saveDictCounter = 0;
@@ -202,15 +202,15 @@ function restoreCollectionSettings(constellationsSheet, settingsSheet, itemsRang
       saveDictCounter++;
     }
   }
-  var maxColumns = constellationsSheet.getMaxColumns();
-  var columnValue = constellationsSheet.getRange(1, 2).getValue();
+  var maxColumns = eidolonsSheet.getMaxColumns();
+  var columnValue = eidolonsSheet.getRange(1, 2).getValue();
 
   if (columnValue > 0 && saveDictCounter > 0) {
-    var startValue = constellationsSheet.getRange(1, columnValue).getValue();
-    var nextValue = constellationsSheet.getRange(1, columnValue+1).getValue();
-    var userInputColumnValue = constellationsSheet.getRange(1, columnValue+2).getValue();
-    var saveRowsValue = constellationsSheet.getRange(1, columnValue+4).getValue();
-    var startSaveRowValue = constellationsSheet.getRange(1, 11).getValue();
+    var startValue = eidolonsSheet.getRange(1, columnValue).getValue();
+    var nextValue = eidolonsSheet.getRange(1, columnValue+1).getValue();
+    var userInputColumnValue = eidolonsSheet.getRange(1, columnValue+2).getValue();
+    var saveRowsValue = eidolonsSheet.getRange(1, columnValue+4).getValue();
+    var startSaveRowValue = eidolonsSheet.getRange(1, 11).getValue();
     if (startSaveRowValue == ""||  startSaveRowValue <= 0) {
       startSaveRowValue = 16;
     }
@@ -219,7 +219,7 @@ function restoreCollectionSettings(constellationsSheet, settingsSheet, itemsRang
         // No more save data to restore.
         break;
       }
-      var nameValue = constellationsSheet.getRange(1, c).getValue();
+      var nameValue = eidolonsSheet.getRange(1, c).getValue();
       if (nameValue != "") {
         var values = saveDict[nameValue];
         if (values) {
@@ -227,24 +227,24 @@ function restoreCollectionSettings(constellationsSheet, settingsSheet, itemsRang
           for (var i = 0; i < values.length; i++) {
             dataArray.push([values[i]]);
           }
-          constellationsSheet.getRange(startSaveRowValue, c - userInputColumnValue,dataArray.length,1).setValues(dataArray);
+          eidolonsSheet.getRange(startSaveRowValue, c - userInputColumnValue,dataArray.length,1).setValues(dataArray);
           saveDictCounter--;
         }
       }
     }
   }
-  var contentValue = constellationsSheet.getRange(1, 1).getValue();
+  var contentValue = eidolonsSheet.getRange(1, 1).getValue();
   if (contentValue > 0) {
     saveData = settingsSheet.getRange(optionsRange).getValue().split(",");
-    var lengthValue = constellationsSheet.getRange(contentValue+2, 1).getValue();
+    var lengthValue = eidolonsSheet.getRange(contentValue+2, 1).getValue();
     if (lengthValue > 0) {
       for (var i = 0; i < saveData.length; i++) {
         var isToggledOn = true;
         if (saveData[i]=="false") {
           isToggledOn = false;
         }
-        if(constellationsSheet.getRange(contentValue+3+i, 1).getValue() != isToggledOn) {
-          constellationsSheet.getRange(contentValue+3+i, 1).setValue(isToggledOn)
+        if(eidolonsSheet.getRange(contentValue+3+i, 1).getValue() != isToggledOn) {
+          eidolonsSheet.getRange(contentValue+3+i, 1).setValue(isToggledOn)
         }
       }
     }
@@ -264,56 +264,56 @@ function restorePityCheckerSettings(sheetPityChecker, settingsSheet) {
   var itemNameFor4Star = settingsSheet.getRange('B18').getValue();
   var itemNameFor5Star = settingsSheet.getRange('B19').getValue();
   if (itemNameFor4Star) {
-    // Character Event Wish
+    // Character Event Warp
     sheetPityChecker.hideColumns(2)
     sheetPityChecker.showColumns(4)
-    // Permanent Wish History
+    // Regular Warp History
     sheetPityChecker.hideColumns(14)
     sheetPityChecker.showColumns(16)
-    // Weapon Wish History
+    // Light Cone Warp History
     sheetPityChecker.hideColumns(26)
     sheetPityChecker.showColumns(28)
-    // Novice Wish History
+    // Beginner Warp History
     sheetPityChecker.hideColumns(38)
     sheetPityChecker.showColumns(40)
   } else {
-    // Character Event Wish
+    // Character Event Warp
     sheetPityChecker.showColumns(2)
     sheetPityChecker.hideColumns(4)
-    // Permanent Wish History
+    // Regular Warp History
     sheetPityChecker.showColumns(14)
     sheetPityChecker.hideColumns(16)
-    // Weapon Wish History
+    // Light Cone Warp History
     sheetPityChecker.showColumns(26)
     sheetPityChecker.hideColumns(28)
-    // Novice Wish History
+    // Beginner Warp History
     sheetPityChecker.showColumns(38)
     sheetPityChecker.hideColumns(40)
   }
   if (itemNameFor5Star) {
-    // Character Event Wish
+    // Character Event Warp
     sheetPityChecker.hideColumns(8)
     sheetPityChecker.showColumns(10)
-    // Permanent Wish History
+    // Regular Warp History
     sheetPityChecker.hideColumns(20)
     sheetPityChecker.showColumns(22)
-    // Weapon Wish History
+    // Light Cone Warp History
     sheetPityChecker.hideColumns(32)
     sheetPityChecker.showColumns(34)
-    // Novice Wish History
+    // Beginner Warp History
     sheetPityChecker.hideColumns(44)
     sheetPityChecker.showColumns(46)
   } else {
-    // Character Event Wish
+    // Character Event Warp
     sheetPityChecker.showColumns(8)
     sheetPityChecker.hideColumns(10)
-    // Permanent Wish History
+    // Regular Warp History
     sheetPityChecker.showColumns(20)
     sheetPityChecker.hideColumns(22)
-    // Weapon Wish History
+    // Light Cone Warp History
     sheetPityChecker.showColumns(32)
     sheetPityChecker.hideColumns(34)
-    // Novice Wish History
+    // Beginner Warp History
     sheetPityChecker.showColumns(44)
     sheetPityChecker.hideColumns(46)
   }
@@ -350,7 +350,7 @@ var quickUpdateRange = [
 
 function quickUpdate() {
   var settingsSheet = getSettingsSheet();
-  var dashboardSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_DASHBOARD_SHEET_NAME);
+  var dashboardSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_DASHBOARD_SHEET_NAME);
   if (dashboardSheet) {
     dashboardSheet.getRange(dashboardEditRange[0]).setValue("Quick Update: Running script, please wait.");
     dashboardSheet.getRange(dashboardEditRange[0]).setFontColor("yellow").setFontWeight("bold");
@@ -381,17 +381,17 @@ function quickUpdate() {
         settingsSheet.getRange("G10").setValue(new Date());
       }
 
-      var changelogSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_CHANGELOG_SHEET_NAME);
+      var changelogSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_CHANGELOG_SHEET_NAME);
       if (changelogSheet) {
         try {
           var sheetSource = getSourceDocument();
           if (sheetSource) {
             // get latest banners
-            var sheetPityChecker = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_PITY_CHECKER_SHEET_NAME);
+            var sheetPityChecker = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_PITY_CHECKER_SHEET_NAME);
             if (sheetPityChecker) {
               restorePityCheckerSettings(sheetPityChecker, settingsSheet);
               if (sheetSource) {
-                var sheetPityCheckerSource = sheetSource.getSheetByName(WISH_TALLY_PITY_CHECKER_SHEET_NAME);
+                var sheetPityCheckerSource = sheetSource.getSheetByName(WARP_TALLY_PITY_CHECKER_SHEET_NAME);
                 if (sheetPityCheckerSource) {
                   for (var i = 0; i < quickUpdateRange.length; i++) {
                     var range = quickUpdateRange[i];
@@ -408,7 +408,7 @@ function quickUpdate() {
             }
             // check latest logs to see anything new
             if (dashboardSheet) {
-              var sheetAvailableSource = sheetSource.getSheetByName(WISH_TALLY_AVAILABLE_SHEET_NAME);
+              var sheetAvailableSource = sheetSource.getSheetByName(WARP_TALLY_AVAILABLE_SHEET_NAME);
 
               var sourceDocumentVersion = sheetAvailableSource.getRange("E1").getValues();
               var currentDocumentVersion = dashboardSheet.getRange(dashboardEditRange[2]).getValues();
@@ -427,7 +427,7 @@ function quickUpdate() {
               var lastDateChangeSourceText;
               var isChangelogTheSame = true;
               
-              var sheetChangelogSource = sheetSource.getSheetByName(WISH_TALLY_CHANGELOG_SHEET_NAME);
+              var sheetChangelogSource = sheetSource.getSheetByName(WARP_TALLY_CHANGELOG_SHEET_NAME);
               for (var i = 0; i < changesCheckRange.length; i++) {
                 var checkChangelogSource = sheetChangelogSource.getRange(changesCheckRange[i]).getValue();
                 if (checkChangelogSource instanceof Date) {
@@ -497,7 +497,7 @@ function quickUpdate() {
 */
 function updateItemsList() {
   var settingsSheet = getSettingsSheet();
-  var dashboardSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_DASHBOARD_SHEET_NAME);
+  var dashboardSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_DASHBOARD_SHEET_NAME);
   var updateItemHasFailed = false;
   var errorMessage = "";
   if (dashboardSheet) {
@@ -509,7 +509,7 @@ function updateItemsList() {
   if (sheetSource) {
     try {
       // attempt to load sheet from source, to prevent removing sheets first.
-      var sheetAvailableSource = sheetSource.getSheetByName(WISH_TALLY_AVAILABLE_SHEET_NAME);
+      var sheetAvailableSource = sheetSource.getSheetByName(WARP_TALLY_AVAILABLE_SHEET_NAME);
       // Avoid Exception: You can't remove all the sheets in a document.Details
       var placeHolderSheet = null;
       if (SpreadsheetApp.getActive().getSheets().length == 1) {
@@ -540,7 +540,7 @@ function updateItemsList() {
         }
       }
       // Remove sheets
-      var listOfSheetsToRemove = [WISH_TALLY_CHARACTERS_OLD_SHEET_NAME,WISH_TALLY_CHARACTERS_SHEET_NAME,WISH_TALLY_WEAPONS_SHEET_NAME,WISH_TALLY_EVENTS_SHEET_NAME,WISH_TALLY_RESULTS_SHEET_NAME,WISH_TALLY_PITY_CHECKER_SHEET_NAME,WISH_TALLY_ALL_WISH_HISTORY_SHEET_NAME,WISH_TALLY_ITEMS_SHEET_NAME];
+      var listOfSheetsToRemove = [WARP_TALLY_CHARACTERS_OLD_SHEET_NAME,WARP_TALLY_CHARACTERS_SHEET_NAME,WARP_TALLY_LIGHTCONES_SHEET_NAME,WARP_TALLY_EVENTS_SHEET_NAME,WARP_TALLY_RESULTS_SHEET_NAME,WARP_TALLY_PITY_CHECKER_SHEET_NAME,WARP_TALLY_ALL_WARP_HISTORY_SHEET_NAME,WARP_TALLY_ITEMS_SHEET_NAME];
 
       var availableRanges = sheetAvailableSource.getRange(2,1, sheetAvailableSource.getMaxRows()-1,5).getValues();
 
@@ -568,17 +568,17 @@ function updateItemsList() {
         var sheetToRemove = SpreadsheetApp.getActive().getSheetByName(sheetNameToRemove);
         if(sheetToRemove) {
           if (settingsSheet) {
-            if (sheetNameToRemove == WISH_TALLY_PITY_CHECKER_SHEET_NAME) {
+            if (sheetNameToRemove == WARP_TALLY_PITY_CHECKER_SHEET_NAME) {
               savePityCheckerSettings(sheetToRemove, settingsSheet);
-            } else if (sheetNameToRemove == WISH_TALLY_RESULTS_SHEET_NAME) {
+            } else if (sheetNameToRemove == WARP_TALLY_RESULTS_SHEET_NAME) {
               saveResultsSettings(sheetToRemove, settingsSheet);
-            } else if (sheetNameToRemove == WISH_TALLY_EVENTS_SHEET_NAME) {
+            } else if (sheetNameToRemove == WARP_TALLY_EVENTS_SHEET_NAME) {
               saveEventsSettings(sheetToRemove, settingsSheet);
-            } else if (sheetNameToRemove == WISH_TALLY_CHARACTERS_OLD_SHEET_NAME) {
+            } else if (sheetNameToRemove == WARP_TALLY_CHARACTERS_OLD_SHEET_NAME) {
               saveCollectionSettings(sheetToRemove, settingsSheet,"G7","H7");
-            } else if (sheetNameToRemove == WISH_TALLY_CHARACTERS_SHEET_NAME) {
+            } else if (sheetNameToRemove == WARP_TALLY_CHARACTERS_SHEET_NAME) {
               saveCollectionSettings(sheetToRemove, settingsSheet,"G7","H7");
-            } else if (sheetNameToRemove == WISH_TALLY_WEAPONS_SHEET_NAME) {
+            } else if (sheetNameToRemove == WARP_TALLY_LIGHTCONES_SHEET_NAME) {
               saveCollectionSettings(sheetToRemove, settingsSheet,"G8","H8");
             }
           }
@@ -588,35 +588,35 @@ function updateItemsList() {
         }
       }
       
-      var listOfSheets = [WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME,WISH_TALLY_PERMANENT_WISH_SHEET_NAME,WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME,WISH_TALLY_NOVICE_WISH_SHEET_NAME];
+      var listOfSheets = [WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME,WARP_TALLY_REGULAR_WARP_SHEET_NAME,WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME,WARP_TALLY_BEGINNER_WARP_SHEET_NAME];
       var listOfSheetsLength = listOfSheets.length;
       // Check if sheet exist
       for (var i = 0; i < listOfSheetsLength; i++) {
-        findWishHistoryByName(listOfSheets[i], sheetSource);
+        findWarpHistoryByName(listOfSheets[i], sheetSource);
       }
 
       // Add Language
       var sheetItemSource;
       if (settingsSheet) {
         var languageFound = settingsSheet.getRange(2, 2).getValue();
-        sheetItemSource = sheetSource.getSheetByName(WISH_TALLY_ITEMS_SHEET_NAME+"-"+languageFound);
+        sheetItemSource = sheetSource.getSheetByName(WARP_TALLY_ITEMS_SHEET_NAME+"-"+languageFound);
       }
       if (sheetItemSource) {
         // Found language
       } else {
         // Default
-        sheetItemSource = sheetSource.getSheetByName(WISH_TALLY_ITEMS_SHEET_NAME);
+        sheetItemSource = sheetSource.getSheetByName(WARP_TALLY_ITEMS_SHEET_NAME);
       }
-      sheetItemSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_ITEMS_SHEET_NAME);
+      sheetItemSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_ITEMS_SHEET_NAME);
 
-      var sheetAllWishHistorySource = sheetSource.getSheetByName(WISH_TALLY_ALL_WISH_HISTORY_SHEET_NAME);
-      var sheetAllWishHistory = sheetAllWishHistorySource.copyTo(SpreadsheetApp.getActiveSpreadsheet());
-      sheetAllWishHistory.setName(WISH_TALLY_ALL_WISH_HISTORY_SHEET_NAME);
-      sheetAllWishHistory.hideSheet();
+      var sheetAllWarpHistorySource = sheetSource.getSheetByName(WARP_TALLY_ALL_WARP_HISTORY_SHEET_NAME);
+      var sheetAllWarpHistory = sheetAllWarpHistorySource.copyTo(SpreadsheetApp.getActiveSpreadsheet());
+      sheetAllWarpHistory.setName(WARP_TALLY_ALL_WARP_HISTORY_SHEET_NAME);
+      sheetAllWarpHistory.hideSheet();
 
       // Refresh spreadsheet
       for (var i = 0; i < listOfSheetsLength; i++) {
-        addFormulaByWishHistoryName(listOfSheets[i]);
+        addFormulaByWarpHistoryName(listOfSheets[i]);
         /*
         var sheetOld = SpreadsheetApp.getActive().getSheetByName(listOfSheets[i]);
         var sheetCopySource = sheetSource.getSheetByName(listOfSheets[i]);
@@ -632,23 +632,23 @@ function updateItemsList() {
       
       var shouldShowSheet = true;
       if (settingsSheet) {
-        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WISH_TALLY_EVENTS_SHEET_NAME]["setting_option"]).getValue()) {
+        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WARP_TALLY_EVENTS_SHEET_NAME]["setting_option"]).getValue()) {
         } else {
           shouldShowSheet = false;
         }
       }
       var sheetEvents;
       if (shouldShowSheet) {
-        var sheetEventsSource = sheetSource.getSheetByName(WISH_TALLY_EVENTS_SHEET_NAME);
-        sheetEvents = sheetEventsSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_EVENTS_SHEET_NAME);
+        var sheetEventsSource = sheetSource.getSheetByName(WARP_TALLY_EVENTS_SHEET_NAME);
+        sheetEvents = sheetEventsSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_EVENTS_SHEET_NAME);
         
         if (settingsSheet) {
           restoreEventsSettings(sheetEvents, settingsSheet);
         }
       }
 
-      var sheetPityCheckerSource = sheetSource.getSheetByName(WISH_TALLY_PITY_CHECKER_SHEET_NAME);
-      var sheetPityChecker = sheetPityCheckerSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_PITY_CHECKER_SHEET_NAME);
+      var sheetPityCheckerSource = sheetSource.getSheetByName(WARP_TALLY_PITY_CHECKER_SHEET_NAME);
+      var sheetPityChecker = sheetPityCheckerSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_PITY_CHECKER_SHEET_NAME);
       
       
       if (settingsSheet) {
@@ -666,7 +666,7 @@ function updateItemsList() {
       // Show Results
       shouldShowSheet = true;
       if (settingsSheet) {
-        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WISH_TALLY_RESULTS_SHEET_NAME]["setting_option"]).getValue()) {
+        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WARP_TALLY_RESULTS_SHEET_NAME]["setting_option"]).getValue()) {
         } else {
           shouldShowSheet = false;
         }
@@ -677,90 +677,90 @@ function updateItemsList() {
         var sheetResultsSource;
         if (settingsSheet) {
           var languageFound = settingsSheet.getRange(2, 2).getValue();
-          sheetResultsSource = sheetSource.getSheetByName(WISH_TALLY_RESULTS_SHEET_NAME+"-"+languageFound);
+          sheetResultsSource = sheetSource.getSheetByName(WARP_TALLY_RESULTS_SHEET_NAME+"-"+languageFound);
         }
         if (sheetResultsSource) {
           // Found language
         } else {
           // Default
-          sheetResultsSource = sheetSource.getSheetByName(WISH_TALLY_RESULTS_SHEET_NAME);
+          sheetResultsSource = sheetSource.getSheetByName(WARP_TALLY_RESULTS_SHEET_NAME);
         }
-        sheetResults = sheetResultsSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_RESULTS_SHEET_NAME);
+        sheetResults = sheetResultsSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_RESULTS_SHEET_NAME);
         
         if (settingsSheet) {
           restoreResultsSettings(sheetResults, settingsSheet);
         }
       }
-      // Show Constellation
+      // Show Eidolon
       shouldShowSheet = true;
       if (settingsSheet) {
-        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WISH_TALLY_CHARACTERS_SHEET_NAME]["setting_option"]).getValue()) {
+        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WARP_TALLY_CHARACTERS_SHEET_NAME]["setting_option"]).getValue()) {
         } else {
           shouldShowSheet = false;
         }
       }
-      var sheetConstellation;
+      var sheetEidolon;
       if (shouldShowSheet) {
         // Add Language
-        var sheetConstellationSource;
+        var sheetEidolonSource;
         if (settingsSheet) {
           var languageFound = settingsSheet.getRange(2, 2).getValue();
-          sheetConstellationSource = sheetSource.getSheetByName(WISH_TALLY_CHARACTERS_SHEET_NAME+"-"+languageFound);
+          sheetEidolonSource = sheetSource.getSheetByName(WARP_TALLY_CHARACTERS_SHEET_NAME+"-"+languageFound);
         }
-        if (sheetConstellationSource) {
+        if (sheetEidolonSource) {
           // Found language
         } else {
           // Default
-          sheetConstellationSource = sheetSource.getSheetByName(WISH_TALLY_CHARACTERS_SHEET_NAME);
+          sheetEidolonSource = sheetSource.getSheetByName(WARP_TALLY_CHARACTERS_SHEET_NAME);
         }
-        if (sheetConstellationSource) {
-          sheetConstellation = sheetConstellationSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_CHARACTERS_SHEET_NAME);
+        if (sheetEidolonSource) {
+          sheetEidolon = sheetEidolonSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_CHARACTERS_SHEET_NAME);
 
           // Refresh Contents Links
-          var contentsAvailable = sheetConstellation.getRange(1, 1).getValue();
-          var hyperlinkColumn = sheetConstellation.getRange(1, 3).getValue();
+          var contentsAvailable = sheetEidolon.getRange(1, 1).getValue();
+          var hyperlinkColumn = sheetEidolon.getRange(1, 3).getValue();
           var contentsStartIndex = 2;
-          generateRichTextLinks(sheetConstellation, contentsAvailable, contentsStartIndex, hyperlinkColumn, true);
+          generateRichTextLinks(sheetEidolon, contentsAvailable, contentsStartIndex, hyperlinkColumn, true);
 
           if (settingsSheet) {
-            restoreCollectionSettings(sheetConstellation, settingsSheet,"G7","H7");
+            restoreCollectionSettings(sheetEidolon, settingsSheet,"G7","H7");
           }
           
         }
       }
-      // Show Weapons
+      // Show Light Cones
       shouldShowSheet = true;
       if (settingsSheet) {
-        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WISH_TALLY_WEAPONS_SHEET_NAME]["setting_option"]).getValue()) {
+        if (settingsSheet.getRange(SETTINGS_FOR_OPTIONAL_SHEET[WARP_TALLY_LIGHTCONES_SHEET_NAME]["setting_option"]).getValue()) {
         } else {
           shouldShowSheet = false;
         }
       }
-      var sheetWeapons;
+      var sheetLightcones;
       if (shouldShowSheet) {
         // Add Language
-        var sheetWeaponsSource;
+        var sheetLightconesSource;
         if (settingsSheet) {
           var languageFound = settingsSheet.getRange(2, 2).getValue();
-          sheetWeaponsSource = sheetSource.getSheetByName(WISH_TALLY_WEAPONS_SHEET_NAME+"-"+languageFound);
+          sheetLightconesSource = sheetSource.getSheetByName(WARP_TALLY_LIGHTCONES_SHEET_NAME+"-"+languageFound);
         }
-        if (sheetWeaponsSource) {
+        if (sheetLightconesSource) {
           // Found language
         } else {
           // Default
-          sheetWeaponsSource = sheetSource.getSheetByName(WISH_TALLY_WEAPONS_SHEET_NAME);
+          sheetLightconesSource = sheetSource.getSheetByName(WARP_TALLY_LIGHTCONES_SHEET_NAME);
         }
-        if (sheetWeaponsSource) {
-          sheetWeapons = sheetWeaponsSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_WEAPONS_SHEET_NAME);
+        if (sheetLightconesSource) {
+          sheetLightcones = sheetLightconesSource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_LIGHTCONES_SHEET_NAME);
 
           // Refresh Contents Links
-          var contentsAvailable = sheetWeapons.getRange(1, 1).getValue();
-          var hyperlinkColumn = sheetWeapons.getRange(1, 3).getValue();
+          var contentsAvailable = sheetLightcones.getRange(1, 1).getValue();
+          var hyperlinkColumn = sheetLightcones.getRange(1, 3).getValue();
           var contentsStartIndex = 2;
-          generateRichTextLinks(sheetWeapons, contentsAvailable, contentsStartIndex, hyperlinkColumn, true);
+          generateRichTextLinks(sheetLightcones, contentsAvailable, contentsStartIndex, hyperlinkColumn, true);
 
           if (settingsSheet) {
-            restoreCollectionSettings(sheetWeapons, settingsSheet,"G8","H8");
+            restoreCollectionSettings(sheetLightcones, settingsSheet,"G8","H8");
           }
           
         }

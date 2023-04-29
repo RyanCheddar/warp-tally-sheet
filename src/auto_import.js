@@ -1,6 +1,6 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function extractAuthKeyFromInput(userInput) {
   urlForAPI = userInput.toString().split("&");
@@ -23,7 +23,7 @@ function testAuthKeyInputValidity(userInput) {
     return false;
   }
 
-  const USING_BANNER = "Permanent Wish History";
+  const USING_BANNER = "Regular Warp History";
 
   var settingsSheet = getSettingsSheet();
   var queryBannerCode = AUTO_IMPORT_BANNER_SETTINGS_FOR_IMPORT[USING_BANNER]["gacha_type"];
@@ -33,10 +33,10 @@ function testAuthKeyInputValidity(userInput) {
     // Get default language
     languageSettings = AUTO_IMPORT_LANGUAGE_SETTINGS_FOR_IMPORT["English"];
   }
-  var urlForWishHistory = selectedServer == "China" ? AUTO_IMPORT_URL_CHINA : AUTO_IMPORT_URL;
-  urlForWishHistory += "?" + AUTO_IMPORT_ADDITIONAL_QUERY.join("&") + "&authkey=" + authKey + "&lang=" + languageSettings['code'] + "&gacha_type=" + queryBannerCode;
+  var urlForWarpHistory = selectedServer == "China" ? AUTO_IMPORT_URL_CHINA : AUTO_IMPORT_URL;
+  urlForWarpHistory += "?" + AUTO_IMPORT_ADDITIONAL_QUERY.join("&") + "&authkey=" + authKey + "&lang=" + languageSettings['code'] + "&gacha_type=" + queryBannerCode;
 
-  responseJson = JSON.parse(UrlFetchApp.fetch(urlForWishHistory).getContentText());
+  responseJson = JSON.parse(UrlFetchApp.fetch(urlForWarpHistory).getContentText());
   if (responseJson.retcode === 0) {
     return true;
   }
@@ -98,8 +98,8 @@ function importFromAPI(urlForAPI) {
   var bannerSettings;
   if (foundAuth == "") {
     // Display auth key not available
-    for (var i = 0; i < WISH_TALLY_NAME_OF_WISH_HISTORY.length; i++) {
-      bannerName = WISH_TALLY_NAME_OF_WISH_HISTORY[i];
+    for (var i = 0; i < WARP_TALLY_NAME_OF_WARP_HISTORY.length; i++) {
+      bannerName = WARP_TALLY_NAME_OF_WARP_HISTORY[i];
       bannerSettings = AUTO_IMPORT_BANNER_SETTINGS_FOR_IMPORT[bannerName];
       settingsSheet.getRange(bannerSettings['range_status']).setValue("No auth key");
     }
@@ -111,29 +111,29 @@ function importFromAPI(urlForAPI) {
       // Get default language
       languageSettings = AUTO_IMPORT_LANGUAGE_SETTINGS_FOR_IMPORT["English"];
     }
-    var urlForWishHistory;
+    var urlForWarpHistory;
     if (selectedServer == "China") {
-      urlForWishHistory = AUTO_IMPORT_URL_CHINA;
+      urlForWarpHistory = AUTO_IMPORT_URL_CHINA;
     } else {
-      urlForWishHistory = AUTO_IMPORT_URL;
+      urlForWarpHistory = AUTO_IMPORT_URL;
     }
-    urlForWishHistory += "?"+AUTO_IMPORT_ADDITIONAL_QUERY.join("&")+"&authkey="+foundAuth+"&lang="+languageSettings['code'];
+    urlForWarpHistory += "?"+AUTO_IMPORT_ADDITIONAL_QUERY.join("&")+"&authkey="+foundAuth+"&lang="+languageSettings['code'];
     errorCodeNotEncountered = true;
     // Clear status
-    for (var i = 0; i < WISH_TALLY_NAME_OF_WISH_HISTORY.length; i++) {
-      bannerName = WISH_TALLY_NAME_OF_WISH_HISTORY[i];
+    for (var i = 0; i < WARP_TALLY_NAME_OF_WARP_HISTORY.length; i++) {
+      bannerName = WARP_TALLY_NAME_OF_WARP_HISTORY[i];
       bannerSettings = AUTO_IMPORT_BANNER_SETTINGS_FOR_IMPORT[bannerName];
       settingsSheet.getRange(bannerSettings['range_status']).setValue("");
     }
-    for (var i = 0; i < WISH_TALLY_NAME_OF_WISH_HISTORY.length; i++) {
+    for (var i = 0; i < WARP_TALLY_NAME_OF_WARP_HISTORY.length; i++) {
       if (errorCodeNotEncountered) {
-        bannerName = WISH_TALLY_NAME_OF_WISH_HISTORY[i];
+        bannerName = WARP_TALLY_NAME_OF_WARP_HISTORY[i];
         bannerSettings = AUTO_IMPORT_BANNER_SETTINGS_FOR_IMPORT[bannerName];
         var isToggled = settingsSheet.getRange(bannerSettings['range_toggle']).getValue();
         if (isToggled == true) {
           bannerSheet = SpreadsheetApp.getActive().getSheetByName(bannerName);
           if (bannerSheet) {
-            checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, languageSettings, settingsSheet);
+            checkPages(urlForWarpHistory, bannerSheet, bannerName, bannerSettings, languageSettings, settingsSheet);
           } else {
             settingsSheet.getRange(bannerSettings['range_status']).setValue("Missing sheet");
           }
@@ -149,24 +149,24 @@ function importFromAPI(urlForAPI) {
   settingsSheet.getRange("E43").setValue(new Date());
 }
 
-function checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, languageSettings, settingsSheet) {
+function checkPages(urlForWarpHistory, bannerSheet, bannerName, bannerSettings, languageSettings, settingsSheet) {
   settingsSheet.getRange(bannerSettings['range_status']).setValue("Starting");
-  /* Get latest wish from banner */
+  /* Get latest warp from banner */
   var iLastRow = bannerSheet.getRange(2, 5, bannerSheet.getLastRow(), 1).getValues().filter(String).length;
-  var wishTextString;
-  var lastWishDateAndTimeString;
-  var lastWishDateAndTime;
+  var warpTextString;
+  var lastWarpDateAndTimeString;
+  var lastWarpDateAndTime;
   if (iLastRow && iLastRow != 0 ) {
     iLastRow++;
-    lastWishDateAndTimeString = bannerSheet.getRange("E" + iLastRow).getValue();
-    wishTextString = bannerSheet.getRange("A" + iLastRow).getValue();
-    if (lastWishDateAndTimeString) {
-      settingsSheet.getRange(bannerSettings['range_status']).setValue("Last wish: "+lastWishDateAndTimeString);
-      lastWishDateAndTimeString = lastWishDateAndTimeString.split(" ").join("T");
-      lastWishDateAndTime = new Date(lastWishDateAndTimeString+".000Z");
+    lastWarpDateAndTimeString = bannerSheet.getRange("E" + iLastRow).getValue();
+    warpTextString = bannerSheet.getRange("A" + iLastRow).getValue();
+    if (lastWarpDateAndTimeString) {
+      settingsSheet.getRange(bannerSettings['range_status']).setValue("Last warp: "+lastWarpDateAndTimeString);
+      lastWarpDateAndTimeString = lastWarpDateAndTimeString.split(" ").join("T");
+      lastWarpDateAndTime = new Date(lastWarpDateAndTimeString+".000Z");
     } else {
       iLastRow = 1;
-      settingsSheet.getRange(bannerSettings['range_status']).setValue("No previous wishes");
+      settingsSheet.getRange(bannerSettings['range_status']).setValue("No previous warpes");
     }
     iLastRow++; // Move last row to new row
   } else {
@@ -174,11 +174,11 @@ function checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, 
     settingsSheet.getRange(bannerSettings['range_status']).setValue("");
   }
   
-  var extractWishes = [];
+  var extractWarpes = [];
   var page = 1;
   var queryBannerCode = bannerSettings["gacha_type"];
-  var numberOfWishPerPage = 6;
-  var urlForBanner = urlForWishHistory+"&gacha_type="+queryBannerCode+"&size="+numberOfWishPerPage;
+  var numberOfWarpPerPage = 6;
+  var urlForBanner = urlForWarpHistory+"&gacha_type="+queryBannerCode+"&size="+numberOfWarpPerPage;
   var failed = 0;
   var is_done = false;
   var end_id = 0;
@@ -187,8 +187,8 @@ function checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, 
   var checkPreviousDateAndTime;
   var checkOneSecondOffDateAndTime;
   var overrideIndex = 0;
-  var textWish;
-  var oldTextWish;
+  var textWarp;
+  var oldTextWarp;
   while (!is_done) {
     settingsSheet.getRange(bannerSettings['range_status']).setValue("Loading page: "+page);
     var response = UrlFetchApp.fetch(urlForBanner+"&page="+page+"&end_id="+end_id);
@@ -196,64 +196,64 @@ function checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, 
     var jsonDict = JSON.parse(jsonResponse);
     var jsonDictData = jsonDict["data"];
     if (jsonDictData) {
-      var listOfWishes = jsonDictData["list"];
-      var listOfWishesLength = listOfWishes.length;
-      var wish;
-      if (listOfWishesLength > 0) {
-        for (var i = 0; i < listOfWishesLength; i++) {
-          wish = listOfWishes[i];
-          var dateAndTimeString = wish['time'];
-          textWish = wish['item_type']+wish['name'];
+      var listOfWarpes = jsonDictData["list"];
+      var listOfWarpesLength = listOfWarpes.length;
+      var warp;
+      if (listOfWarpesLength > 0) {
+        for (var i = 0; i < listOfWarpesLength; i++) {
+          warp = listOfWarpes[i];
+          var dateAndTimeString = warp['time'];
+          textWarp = warp['item_type']+warp['name'];
           /* Mimic the website in showing specific language wording */
-          if (wish['rank_type'] == 4) {
-            textWish += languageSettings["4_star"];
-          } else if (wish['rank_type'] == 5) {
-            textWish += languageSettings["5_star"];
+          if (warp['rank_type'] == 4) {
+            textWarp += languageSettings["4_star"];
+          } else if (warp['rank_type'] == 5) {
+            textWarp += languageSettings["5_star"];
           }
-          oldTextWish = textWish+dateAndTimeString;
-          var gachaString = "gacha_type_"+wish['gacha_type'];
+          oldTextWarp = textWarp+dateAndTimeString;
+          var gachaString = "gacha_type_"+warp['gacha_type'];
           var bannerName = "Error New Banner";
           if (gachaString in languageSettings) {
             bannerName = languageSettings[gachaString];
           }
-          textWish += bannerName+dateAndTimeString;
+          textWarp += bannerName+dateAndTimeString;
 
           var dateAndTimeStringModified = dateAndTimeString.split(" ").join("T");
-          var wishDateAndTime = new Date(dateAndTimeStringModified+".000Z");
+          var warpDateAndTime = new Date(dateAndTimeStringModified+".000Z");
 
           if (overrideIndex == 0 && checkPreviousDateAndTime) {
-            /* Check one second difference from previous single wish */
+            /* Check one second difference from previous single warp */
             checkOneSecondOffDateAndTime = new Date(checkPreviousDateAndTime.valueOf());
             checkOneSecondOffDateAndTime.setSeconds(checkOneSecondOffDateAndTime.getSeconds()-1);
-            if (checkOneSecondOffDateAndTime.valueOf() == wishDateAndTime.valueOf()) {
-              var nextWishIndex = i+1;
-              if (nextWishIndex < listOfWishesLength) {
-                var nextWish = listOfWishes[nextWishIndex];
-                var nextDateAndTimeString = nextWish['time'];
+            if (checkOneSecondOffDateAndTime.valueOf() == warpDateAndTime.valueOf()) {
+              var nextWarpIndex = i+1;
+              if (nextWarpIndex < listOfWarpesLength) {
+                var nextWarp = listOfWarpes[nextWarpIndex];
+                var nextDateAndTimeString = nextWarp['time'];
                 var nextDateAndTimeStringModified = nextDateAndTimeString.split(" ").join("T");
-                var nextWishDateAndTime = new Date(nextDateAndTimeStringModified+".000Z");
-                if (checkOneSecondOffDateAndTime.valueOf() == nextWishDateAndTime.valueOf()) {
-                  // Due to wish date and time is only second difference, it's therefore a multi. Override previous wish to match.
+                var nextWarpDateAndTime = new Date(nextDateAndTimeStringModified+".000Z");
+                if (checkOneSecondOffDateAndTime.valueOf() == nextWarpDateAndTime.valueOf()) {
+                  // Due to warp date and time is only second difference, it's therefore a multi. Override previous warp to match.
                   checkPreviousDateAndTimeString = dateAndTimeString;
-                  checkPreviousDateAndTime = new Date(wishDateAndTime.valueOf());
+                  checkPreviousDateAndTime = new Date(warpDateAndTime.valueOf());
                 }
               }
             }
           }
           if (checkPreviousDateAndTimeString === dateAndTimeString) {
-            // Found matching date and time to previous wish
+            // Found matching date and time to previous warp
             if (overrideIndex == 0) {
               // Start multi 10 index
-              var previousWishIndex = extractWishes.length - 1;
-              var previousWish = extractWishes[previousWishIndex];
+              var previousWarpIndex = extractWarpes.length - 1;
+              var previousWarp = extractWarpes[previousWarpIndex];
               overrideIndex = 10;
-              previousWish[1] = overrideIndex;
-              extractWishes[previousWishIndex] = previousWish;
+              previousWarp[1] = overrideIndex;
+              extractWarpes[previousWarpIndex] = previousWarp;
             }
             if (overrideIndex == 1) {
               errorCodeNotEncountered = false;
               is_done = true;
-              settingsSheet.getRange(bannerSettings['range_status']).setValue("Error: Multi wish contains 11 within same date and time:"+dateAndTimeString+", found so far: "+extractWishes.length);
+              settingsSheet.getRange(bannerSettings['range_status']).setValue("Error: Multi warp contains 11 within same date and time:"+dateAndTimeString+", found so far: "+extractWarpes.length);
               break;
             } else {
               overrideIndex--;
@@ -262,35 +262,35 @@ function checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, 
             if (overrideIndex > 1) {
               // Resume counting down when override is set more than 1, add a second to checkPreviousDateAndTime
               checkPreviousDateAndTime.setSeconds(checkPreviousDateAndTime.getSeconds()-1);
-              if (checkPreviousDateAndTime.valueOf() == wishDateAndTime.valueOf()) {
+              if (checkPreviousDateAndTime.valueOf() == warpDateAndTime.valueOf()) {
                 // Within 1 second range resuming multi count
                 overrideIndex--;
               } else {
                 errorCodeNotEncountered = false;
                 is_done = true;
-                settingsSheet.getRange(bannerSettings['range_status']).setValue("Error: Multi wish is incomplete with override "+overrideIndex+"@"+dateAndTimeString+", found so far: "+extractWishes.length);
+                settingsSheet.getRange(bannerSettings['range_status']).setValue("Error: Multi warp is incomplete with override "+overrideIndex+"@"+dateAndTimeString+", found so far: "+extractWarpes.length);
                 break;
               }
             } else {
-              // Default value for single wishes
+              // Default value for single warpes
               overrideIndex = 0;
             }
             checkPreviousDateAndTimeString = dateAndTimeString;
-            checkPreviousDateAndTime = new Date(wishDateAndTime.valueOf());
+            checkPreviousDateAndTime = new Date(warpDateAndTime.valueOf());
           }
-          if (lastWishDateAndTime >= wishDateAndTime) {
-            // Banner already got this wish
+          if (lastWarpDateAndTime >= warpDateAndTime) {
+            // Banner already got this warp
             is_done = true;
             break;
           } else {
-            extractWishes.push([textWish, (overrideIndex > 0 ? overrideIndex:null)]);
+            extractWarpes.push([textWarp, (overrideIndex > 0 ? overrideIndex:null)]);
           }
         }
-        if (!is_done && numberOfWishPerPage == listOfWishesLength) {
-          end_id = wish['id'];
+        if (!is_done && numberOfWarpPerPage == listOfWarpesLength) {
+          end_id = warp['id'];
           page++;
         } else {
-          // If list isn't the size requested, it would mean there is no more wishes.
+          // If list isn't the size requested, it would mean there is no more warpes.
           is_done = true;
         }
       } else {
@@ -328,30 +328,30 @@ function checkPages(urlForWishHistory, bannerSheet, bannerName, bannerSettings, 
     settingsSheet.getRange(bannerSettings['range_status']).setValue("Failed too many times");
   } else {
     if (errorCodeNotEncountered) {
-      if (extractWishes.length > 0) {
+      if (extractWarpes.length > 0) {
         var now = new Date();
         var sixMonthBeforeNow = new Date(now.valueOf());
         sixMonthBeforeNow.setMonth(now.getMonth() - 6);
         var isValid = true;
-        var outputString = "Found: "+extractWishes.length;
-        if (!lastWishDateAndTime) {
+        var outputString = "Found: "+extractWarpes.length;
+        if (!lastWarpDateAndTime) {
           // fresh history sheet no last date to check
-          outputString += ", with wish history being empty"
-        } else if (lastWishDateAndTime < sixMonthBeforeNow) {
-          // Check if last wish found is more than 6 months, no further validation
-          outputString += ", last wish saved was 6 months ago, maybe missing wishes inbetween"
+          outputString += ", with warp history being empty"
+        } else if (lastWarpDateAndTime < sixMonthBeforeNow) {
+          // Check if last warp found is more than 6 months, no further validation
+          outputString += ", last warp saved was 6 months ago, maybe missing warpes inbetween"
         } else {
-          if (wishTextString !== textWish) {
-            if (wishTextString !== oldTextWish) {
-              // API didn't reach to your last wish stored on the sheet, meaning the API is incomplete
+          if (warpTextString !== textWarp) {
+            if (warpTextString !== oldTextWarp) {
+              // API didn't reach to your last warp stored on the sheet, meaning the API is incomplete
               isValid = false;
-              outputString = "Error your recently found wishes did not reach to your last wish, found: "+extractWishes.length+", please try again miHoYo may have sent incomplete wish data.";
+              outputString = "Error your recently found warpes did not reach to your last warp, found: "+extractWarpes.length+", please try again miHoYo may have sent incomplete warp data.";
             }
           }
         }
         if (isValid) {
-          extractWishes.reverse();
-          bannerSheet.getRange(iLastRow, 1, extractWishes.length, 2).setValues(extractWishes);
+          extractWarpes.reverse();
+          bannerSheet.getRange(iLastRow, 1, extractWarpes.length, 2).setValues(extractWarpes);
         }
         settingsSheet.getRange(bannerSettings['range_status']).setValue(outputString);
       } else {

@@ -1,10 +1,10 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function onEdit(e) {
     const sheet = e.range.getSheet(); 
-    if(sheet.getName() == WISH_TALLY_CHARACTERS_SHEET_NAME || sheet.getName() == WISH_TALLY_WEAPONS_SHEET_NAME) {
+    if(sheet.getName() == WARP_TALLY_CHARACTERS_SHEET_NAME || sheet.getName() == WARP_TALLY_LIGHTCONES_SHEET_NAME) {
         if (e.value == "TRUE") {
             var allowableColumns = sheet.getRange(1,12).getValue();
             allowableColumns = String(allowableColumns).split(",");

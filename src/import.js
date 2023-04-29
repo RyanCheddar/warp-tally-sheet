@@ -1,12 +1,12 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function importButtonScript() {
   var settingsSheet = getSettingsSheet();
-  var dashboardSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_DASHBOARD_SHEET_NAME);
+  var dashboardSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_DASHBOARD_SHEET_NAME);
   if (!dashboardSheet || !settingsSheet) {
-    SpreadsheetApp.getActiveSpreadsheet().toast("Unable to find '" + WISH_TALLY_DASHBOARD_SHEET_NAME + "' or '" + WISH_TALLY_SETTINGS_SHEET_NAME + "'", "Missing Sheets");
+    SpreadsheetApp.getActiveSpreadsheet().toast("Unable to find '" + WARP_TALLY_DASHBOARD_SHEET_NAME + "' or '" + WARP_TALLY_SETTINGS_SHEET_NAME + "'", "Missing Sheets");
     return;
   }
 
@@ -18,11 +18,11 @@ function importButtonScript() {
   if (importSelectionText === autoImportSelection) {
     urlInput = getCachedAuthKeyInput();
     var isInfoRetrieved = false;
-    var sheetRedirectSource = SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID);
+    var sheetRedirectSource = SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID);
     // Check redirect source is available
     if (sheetRedirectSource) {
-      // attempt to load latest message for auto import, as Genshin Impact can sometimes change method.
-      var sheetAutoImportSource = sheetRedirectSource.getSheetByName(WISH_TALLY_REDIRECT_SOURCE_AUTO_IMPORT_SHEET_NAME);
+      // attempt to load latest message for auto import, as Honkai Star Rail can sometimes change method.
+      var sheetAutoImportSource = sheetRedirectSource.getSheetByName(WARP_TALLY_REDIRECT_SOURCE_AUTO_IMPORT_SHEET_NAME);
       if (sheetAutoImportSource) {
         importSelectionTextSubtitle = sheetAutoImportSource.getRange("B5").getValue();
         isInfoRetrieved = true;
@@ -65,7 +65,7 @@ function importDataManagement() {
   var message = "";
   var title = "";
   var statusMessage = "";
-  var rowOfStatusWishHistory = 9;
+  var rowOfStatusWarpHistory = 9;
   if (userImportStatus == IMPORT_STATUS_COMPLETE) {
       title = "Error";
       message = "Already done, you only need to run once";
@@ -87,32 +87,32 @@ function importDataManagement() {
       }
       if (importSource) {
         // Go through the available sheet list
-        for (var i = 0; i < WISH_TALLY_NAME_OF_WISH_HISTORY.length; i++) {
-          var bannerImportSheet = importSource.getSheetByName(WISH_TALLY_NAME_OF_WISH_HISTORY[i]);
+        for (var i = 0; i < WARP_TALLY_NAME_OF_WARP_HISTORY.length; i++) {
+          var bannerImportSheet = importSource.getSheetByName(WARP_TALLY_NAME_OF_WARP_HISTORY[i]);
 
           if (bannerImportSheet) {
             var numberOfRows = bannerImportSheet.getMaxRows()-1;
             var range = bannerImportSheet.getRange(2, 1, numberOfRows, 2);
 
             if (numberOfRows > 0) {
-              var bannerSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_NAME_OF_WISH_HISTORY[i]);
+              var bannerSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_NAME_OF_WARP_HISTORY[i]);
 
               if (bannerSheet) {
                 bannerSheet.getRange(2, 1, numberOfRows, 2).setValues(range.getValues());
-                settingsSheet.getRange(rowOfStatusWishHistory+i, 5).setValue(IMPORT_STATUS_WISH_HISTORY_COMPLETE);
+                settingsSheet.getRange(rowOfStatusWarpHistory+i, 5).setValue(IMPORT_STATUS_WARP_HISTORY_COMPLETE);
               } else {
-                settingsSheet.getRange(rowOfStatusWishHistory+i, 5).setValue(IMPORT_STATUS_WISH_HISTORY_NOT_FOUND);
+                settingsSheet.getRange(rowOfStatusWarpHistory+i, 5).setValue(IMPORT_STATUS_WARP_HISTORY_NOT_FOUND);
               }
             } else {
-              settingsSheet.getRange(rowOfStatusWishHistory+i, 5).setValue(IMPORT_STATUS_WISH_HISTORY_EMPTY);
+              settingsSheet.getRange(rowOfStatusWarpHistory+i, 5).setValue(IMPORT_STATUS_WARP_HISTORY_EMPTY);
             }
           } else {
-            settingsSheet.getRange(rowOfStatusWishHistory+i, 5).setValue(IMPORT_STATUS_WISH_HISTORY_NOT_FOUND);
+            settingsSheet.getRange(rowOfStatusWarpHistory+i, 5).setValue(IMPORT_STATUS_WARP_HISTORY_NOT_FOUND);
           }
         }
-        var sourceSettingsSheet = importSource.getSheetByName(WISH_TALLY_SETTINGS_SHEET_NAME);
+        var sourceSettingsSheet = importSource.getSheetByName(WARP_TALLY_SETTINGS_SHEET_NAME);
         if (sourceSettingsSheet) {
-          var sourcePityCheckerSheet = importSource.getSheetByName(WISH_TALLY_PITY_CHECKER_SHEET_NAME);
+          var sourcePityCheckerSheet = importSource.getSheetByName(WARP_TALLY_PITY_CHECKER_SHEET_NAME);
           if (sourcePityCheckerSheet) {
             savePityCheckerSettings(sourcePityCheckerSheet, settingsSheet);
           }
@@ -125,7 +125,7 @@ function importDataManagement() {
               settingsSheet.getRange("B19").setValue(pityCheckerIsShow5Star == true);
             }
           }
-          var pityCheckerSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_PITY_CHECKER_SHEET_NAME);
+          var pityCheckerSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_PITY_CHECKER_SHEET_NAME);
           if (pityCheckerSheet) {
             restorePityCheckerSettings(pityCheckerSheet, settingsSheet);
           }
@@ -143,53 +143,53 @@ function importDataManagement() {
           }
         }
         //Restore Events
-        var sourceEventsSheet = importSource.getSheetByName(WISH_TALLY_EVENTS_SHEET_NAME);
+        var sourceEventsSheet = importSource.getSheetByName(WARP_TALLY_EVENTS_SHEET_NAME);
         if (sourceEventsSheet) {
           saveEventsSettings(sourceEventsSheet,settingsSheet);
-          var eventsSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_EVENTS_SHEET_NAME);
+          var eventsSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_EVENTS_SHEET_NAME);
           if (eventsSheet) {
             restoreEventsSettings(eventsSheet, settingsSheet)
           }
         }
         
         //Restore Results
-        var sourceResultsSheet = importSource.getSheetByName(WISH_TALLY_RESULTS_SHEET_NAME);
+        var sourceResultsSheet = importSource.getSheetByName(WARP_TALLY_RESULTS_SHEET_NAME);
         if (sourceResultsSheet) {
           saveResultsSettings(sourceResultsSheet, settingsSheet);
-          var resultsSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_RESULTS_SHEET_NAME);
+          var resultsSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_RESULTS_SHEET_NAME);
           if (resultsSheet) {
             restoreResultsSettings(resultsSheet, settingsSheet)
           }
         }
         
-        //Restore Constellation old name
-        var sourceConstellationSheet = importSource.getSheetByName(WISH_TALLY_CHARACTERS_OLD_SHEET_NAME);
-        if (sourceConstellationSheet) {
-          saveCollectionSettings(sourceConstellationSheet, settingsSheet,"G7","H7");
+        //Restore Eidolon old name
+        var sourceEidolonSheet = importSource.getSheetByName(WARP_TALLY_CHARACTERS_OLD_SHEET_NAME);
+        if (sourceEidolonSheet) {
+          saveCollectionSettings(sourceEidolonSheet, settingsSheet,"G7","H7");
           // Restore save to the new Characters sheer
-          var constellationSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_CHARACTERS_SHEET_NAME);
-          if (constellationSheet) {
-            restoreCollectionSettings(constellationSheet, settingsSheet,"G7","H7");
+          var eidolonSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_CHARACTERS_SHEET_NAME);
+          if (eidolonSheet) {
+            restoreCollectionSettings(eidolonSheet, settingsSheet,"G7","H7");
           }
         } else {
           // Restore new name Characters
-          sourceConstellationSheet = importSource.getSheetByName(WISH_TALLY_CHARACTERS_SHEET_NAME);
-          if (sourceConstellationSheet) {
-            saveCollectionSettings(sourceConstellationSheet, settingsSheet,"G7","H7");
-            var constellationSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_CHARACTERS_SHEET_NAME);
-            if (constellationSheet) {
-              restoreCollectionSettings(constellationSheet, settingsSheet,"G7","H7");
+          sourceEidolonSheet = importSource.getSheetByName(WARP_TALLY_CHARACTERS_SHEET_NAME);
+          if (sourceEidolonSheet) {
+            saveCollectionSettings(sourceEidolonSheet, settingsSheet,"G7","H7");
+            var eidolonSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_CHARACTERS_SHEET_NAME);
+            if (eidolonSheet) {
+              restoreCollectionSettings(eidolonSheet, settingsSheet,"G7","H7");
             }
           }
         }
 
-        //Restore Weapons
-        var sourceWeaponsSheet = importSource.getSheetByName(WISH_TALLY_WEAPONS_SHEET_NAME);
-        if (sourceWeaponsSheet) {
-          saveCollectionSettings(sourceWeaponsSheet, settingsSheet,"G8","H8");
-          var weaponsSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_WEAPONS_SHEET_NAME);
-          if (weaponsSheet) {
-            restoreCollectionSettings(weaponsSheet, settingsSheet,"G8","H8");
+        //Restore Light Cones
+        var sourceLightconesSheet = importSource.getSheetByName(WARP_TALLY_LIGHTCONES_SHEET_NAME);
+        if (sourceLightconesSheet) {
+          saveCollectionSettings(sourceLightconesSheet, settingsSheet,"G8","H8");
+          var lightconesSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_LIGHTCONES_SHEET_NAME);
+          if (lightconesSheet) {
+            restoreCollectionSettings(lightconesSheet, settingsSheet,"G8","H8");
           }
         }
 

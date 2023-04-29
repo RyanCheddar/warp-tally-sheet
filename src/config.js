@@ -1,25 +1,25 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
-// Wish Tally Const
-var WISH_TALLY_SHEET_SOURCE_REDIRECT_ID = '1Um4vaqyYDRXqpnB6vFcz92lvfW0VGIrevTH7eT8RTtg';
-var WISH_TALLY_SHEET_SUPPORTED_LOCALE = "en_GB";
-var WISH_TALLY_SHEET_SCRIPT_VERSION = 3.61;
-var WISH_TALLY_SHEET_SCRIPT_IS_ADD_ON = false;
+// Warp Tally Const
+var WARP_TALLY_SHEET_SOURCE_REDIRECT_ID = '1uw8yqiRwda8Pi68koih4hWivNr9-JCFL3ULbzfAmPU8';
+var WARP_TALLY_SHEET_SUPPORTED_LOCALE = "en_GB";
+var WARP_TALLY_SHEET_SCRIPT_VERSION = 1.00;
+var WARP_TALLY_SHEET_SCRIPT_IS_ADD_ON = false;
 
 // Auto Import Const
 /* Add URL here to avoid showing on Sheet */
 var AUTO_IMPORT_URL_FOR_API_BYPASS = ""; // Optional
 var AUTO_IMPORT_BANNER_SETTINGS_FOR_IMPORT = {
-  "Character Event Wish History": { "range_status": "E44", "range_toggle": "E37", "gacha_type": 301 },
-  "Permanent Wish History": { "range_status": "E45", "range_toggle": "E38", "gacha_type": 200 },
-  "Weapon Event Wish History": { "range_status": "E46", "range_toggle": "E39", "gacha_type": 302 },
-  "Novice Wish History": { "range_status": "E47", "range_toggle": "E40", "gacha_type": 100 },
+  "Character Event Warp History": { "range_status": "E44", "range_toggle": "E37", "gacha_type": 301 },
+  "Regular Warp History": { "range_status": "E45", "range_toggle": "E38", "gacha_type": 200 },
+  "Light Cone Event Warp History": { "range_status": "E46", "range_toggle": "E39", "gacha_type": 302 },
+  "Beginner Warp History": { "range_status": "E47", "range_toggle": "E40", "gacha_type": 100 },
 };
 
 var AUTO_IMPORT_LANGUAGE_SETTINGS_FOR_IMPORT = {
-  "English": { "code": "en", "full_code": "en-us", "4_star": " (4-Star)", "5_star": " (5-Star)", "gacha_type_400": "Character Event Wish-2", "gacha_type_301": "Character Event Wish", "gacha_type_302": "Weapon Event Wish", "gacha_type_200": "Permanent Wish", "gacha_type_100": "Novice Wishes" },
+  "English": { "code": "en", "full_code": "en-us", "4_star": " (4-Star)", "5_star": " (5-Star)", "gacha_type_400": "Character Event Warp-2", "gacha_type_301": "Character Event Warp", "gacha_type_302": "Light Cone Event Warp", "gacha_type_200": "Regular Warp", "gacha_type_100": "Beginner Warpes" },
   "German": { "code": "de", "full_code": "de-de", "4_star": " (4 Sterne)", "5_star": " (5 Sterne)", "gacha_type_400": "Figurenaktionsgebet 2", "gacha_type_301": "Figurenaktionsgebet", "gacha_type_302": "Waffenaktionsgebet", "gacha_type_200": "Standardgebet", "gacha_type_100": "Neulingsgebete" },
   "French": { "code": "fr", "full_code": "fr-fr", "4_star": " (4★)", "5_star": " (5★)", "gacha_type_400": "Vœux événements de personnage - 2", "gacha_type_301": "Vœux événements de personnage", "gacha_type_302": "Vœux événements d'arme", "gacha_type_200": "Vœux permanents", "gacha_type_100": "Vœux des débutants" },
   "Spanish": { "code": "es", "full_code": "es-es", "4_star": " (4★)", "5_star": " (5★)", "gacha_type_400": "Gachapón promocional de personaje 2", "gacha_type_301": "Gachapón promocional de personaje", "gacha_type_302": "Gachapón promocional de arma", "gacha_type_200": "Gachapón permanente", "gacha_type_100": "Gachapón de principiante" },
@@ -43,7 +43,7 @@ var AUTO_IMPORT_ADDITIONAL_QUERY = [
   "device_type=pc"
 ];
 
-var AUTO_IMPORT_URL = "https://hk4e-api-os.mihoyo.com/event/gacha_info/api/getGachaLog";
+var AUTO_IMPORT_URL = "https://api-os-takumi.mihoyo.com/common/gacha_record/api/getGachaLog";
 var AUTO_IMPORT_URL_CHINA = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog";
 
 
@@ -65,46 +65,46 @@ var UID_SERVER = {
   5: { "is_global": false, "code": "cn_qd01", "url": HOYOLAB_GAME_RECORD_URL_CHINA, "salt": HOYOLAB_GAME_RECORD_DS_SALT_CHINA, "x-rpc-app_version": "2.11.1", "x-rpc-client_type": "5" },
   6: { "is_global": true, "code": "os_usa", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
   7: { "is_global": true, "code": "os_euro", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
-  8: { "is_global": true, "code": "os_asia", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
+  8: { "is_global": true, "code": "prod_official_asia", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
   9: { "is_global": true, "code": "os_cht", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4"},
 };
 
-// Wish Tally Const
-var WISH_TALLY_REDIRECT_SOURCE_ABOUT_SHEET_NAME = "About";
-var WISH_TALLY_REDIRECT_SOURCE_AUTO_IMPORT_SHEET_NAME = "Auto Import";
-var WISH_TALLY_REDIRECT_SOURCE_MAINTENANCE_SHEET_NAME = "Maintenance";
-var WISH_TALLY_REDIRECT_SOURCE_HOYOLAB_SHEET_NAME = "HoYoLAB";
-var WISH_TALLY_REDIRECT_SOURCE_BACKUP_SHEET_NAME = "Backup";
-var WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME = "Character Event Wish History";
-var WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME = "Weapon Event Wish History";
-var WISH_TALLY_PERMANENT_WISH_SHEET_NAME = "Permanent Wish History";
-var WISH_TALLY_NOVICE_WISH_SHEET_NAME = "Novice Wish History";
-var WISH_TALLY_WISH_HISTORY_SHEET_NAME = "Wish History";
-var WISH_TALLY_SETTINGS_SHEET_NAME = "Settings";
-var WISH_TALLY_DASHBOARD_SHEET_NAME = "Dashboard";
-var WISH_TALLY_CHANGELOG_SHEET_NAME = "Changelog";
-var WISH_TALLY_PITY_CHECKER_SHEET_NAME = "Pity Checker";
+// Warp Tally Const
+var WARP_TALLY_REDIRECT_SOURCE_ABOUT_SHEET_NAME = "About";
+var WARP_TALLY_REDIRECT_SOURCE_AUTO_IMPORT_SHEET_NAME = "Auto Import";
+var WARP_TALLY_REDIRECT_SOURCE_MAINTENANCE_SHEET_NAME = "Maintenance";
+var WARP_TALLY_REDIRECT_SOURCE_HOYOLAB_SHEET_NAME = "HoYoLAB";
+var WARP_TALLY_REDIRECT_SOURCE_BACKUP_SHEET_NAME = "Backup";
+var WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME = "Character Event Warp History";
+var WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME = "Light Cone Event Warp History";
+var WARP_TALLY_REGULAR_WARP_SHEET_NAME = "Regular Warp History";
+var WARP_TALLY_BEGINNER_WARP_SHEET_NAME = "Beginner Warp History";
+var WARP_TALLY_WARP_HISTORY_SHEET_NAME = "Warp History";
+var WARP_TALLY_SETTINGS_SHEET_NAME = "Settings";
+var WARP_TALLY_DASHBOARD_SHEET_NAME = "Dashboard";
+var WARP_TALLY_CHANGELOG_SHEET_NAME = "Changelog";
+var WARP_TALLY_PITY_CHECKER_SHEET_NAME = "Pity Checker";
 
 // Optional sheets
-var WISH_TALLY_EVENTS_SHEET_NAME = "Events";
-var WISH_TALLY_CHARACTERS_OLD_SHEET_NAME = "Constellation";
-var WISH_TALLY_CHARACTERS_SHEET_NAME = "Characters";
-var WISH_TALLY_WEAPONS_SHEET_NAME = "Weapons";
-var WISH_TALLY_RESULTS_SHEET_NAME = "Results";
+var WARP_TALLY_EVENTS_SHEET_NAME = "Events";
+var WARP_TALLY_CHARACTERS_OLD_SHEET_NAME = "Eidolon";
+var WARP_TALLY_CHARACTERS_SHEET_NAME = "Characters";
+var WARP_TALLY_LIGHTCONES_SHEET_NAME = "Light Cones";
+var WARP_TALLY_RESULTS_SHEET_NAME = "Results";
 // Must match optional sheets names
 var SETTINGS_FOR_OPTIONAL_SHEET = {
   "Events": {"setting_option": "B14"},
   "Results": {"setting_option": "B15"},
   "Characters": {"setting_option": "B16"},
-  "Weapons": {"setting_option": "B22"},
+  "Light Cones": {"setting_option": "B22"},
 }
 
-var WISH_TALLY_README_SHEET_NAME = "README";
-var WISH_TALLY_AVAILABLE_SHEET_NAME = "Available";
-var WISH_TALLY_CRYSTAL_CALCULATOR_SHEET_NAME = "Crystal Calculator";
-var WISH_TALLY_ALL_WISH_HISTORY_SHEET_NAME = "All Wish History";
-var WISH_TALLY_ITEMS_SHEET_NAME = "Items";
-var WISH_TALLY_NAME_OF_WISH_HISTORY = [WISH_TALLY_CHARACTER_EVENT_WISH_SHEET_NAME, WISH_TALLY_PERMANENT_WISH_SHEET_NAME, WISH_TALLY_WEAPON_EVENT_WISH_SHEET_NAME, WISH_TALLY_NOVICE_WISH_SHEET_NAME];
+var WARP_TALLY_README_SHEET_NAME = "README";
+var WARP_TALLY_AVAILABLE_SHEET_NAME = "Available";
+var WARP_TALLY_SHARD_CALCULATOR_SHEET_NAME = "Shard Calculator";
+var WARP_TALLY_ALL_WARP_HISTORY_SHEET_NAME = "All Warp History";
+var WARP_TALLY_ITEMS_SHEET_NAME = "Items";
+var WARP_TALLY_NAME_OF_WARP_HISTORY = [WARP_TALLY_CHARACTER_EVENT_WARP_SHEET_NAME, WARP_TALLY_REGULAR_WARP_SHEET_NAME, WARP_TALLY_LIGHTCONE_EVENT_WARP_SHEET_NAME, WARP_TALLY_BEGINNER_WARP_SHEET_NAME];
 // AutoHotkey Const
 var AUTOHOTKEY_SHEET_NAME = "AutoHotkey";
 var AUTOHOTKEY_SCRIPT_SHEET_NAME = "AutoHotkey-Script";
@@ -112,9 +112,9 @@ var AUTOHOTKEY_SCRIPT_SHEET_NAME = "AutoHotkey-Script";
 // Import Const
 var IMPORT_STATUS_COMPLETE = "COMPLETE";
 var IMPORT_STATUS_FAILED = "FAILED";
-var IMPORT_STATUS_WISH_HISTORY_COMPLETE = "DONE";
-var IMPORT_STATUS_WISH_HISTORY_NOT_FOUND = "NOT FOUND";
-var IMPORT_STATUS_WISH_HISTORY_EMPTY = "EMPTY";
+var IMPORT_STATUS_WARP_HISTORY_COMPLETE = "DONE";
+var IMPORT_STATUS_WARP_HISTORY_NOT_FOUND = "NOT FOUND";
+var IMPORT_STATUS_WARP_HISTORY_EMPTY = "EMPTY";
 
 // Scheduler Const
 var SCHEDULER_TRIGGER_ON_TEXT = "ON";

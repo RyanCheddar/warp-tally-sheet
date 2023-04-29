@@ -1,6 +1,6 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function displayModalDiagram(sheet, sheetName, titleRange, htmlRange, widthSizeRange, heightSizeRange) {
   var isModalDisplayed = false;
@@ -28,23 +28,23 @@ function displayModalDiagram(sheet, sheetName, titleRange, htmlRange, widthSizeR
 }
 
 function displayAbout() {
-  displayModalDiagram(SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID), WISH_TALLY_REDIRECT_SOURCE_ABOUT_SHEET_NAME, "B1", "B2", "B3", "B4");
+  displayModalDiagram(SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID), WARP_TALLY_REDIRECT_SOURCE_ABOUT_SHEET_NAME, "B1", "B2", "B3", "B4");
 }
 
 function displayMaintenance() {
-  displayModalDiagram(SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID), WISH_TALLY_REDIRECT_SOURCE_MAINTENANCE_SHEET_NAME, "B1", "B2", "B3", "B4");
+  displayModalDiagram(SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID), WARP_TALLY_REDIRECT_SOURCE_MAINTENANCE_SHEET_NAME, "B1", "B2", "B3", "B4");
 }
 
 function displayBackup() {
-  displayModalDiagram(SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID), WISH_TALLY_REDIRECT_SOURCE_BACKUP_SHEET_NAME, "B1", "B2", "B3", "B4");
+  displayModalDiagram(SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID), WARP_TALLY_REDIRECT_SOURCE_BACKUP_SHEET_NAME, "B1", "B2", "B3", "B4");
 }
 
 function displayAutoImport() {
-  displayModalDiagram(SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID), WISH_TALLY_REDIRECT_SOURCE_AUTO_IMPORT_SHEET_NAME, "B1", "B2", "B3", "B4");
+  displayModalDiagram(SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID), WARP_TALLY_REDIRECT_SOURCE_AUTO_IMPORT_SHEET_NAME, "B1", "B2", "B3", "B4");
 }
 
 function displayHoYoLab() {
-  displayModalDiagram(SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID), WISH_TALLY_REDIRECT_SOURCE_HOYOLAB_SHEET_NAME, "B1", "B2", "B3", "B4");
+  displayModalDiagram(SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID), WARP_TALLY_REDIRECT_SOURCE_HOYOLAB_SHEET_NAME, "B1", "B2", "B3", "B4");
 }
 
 function displayReadme() {
@@ -55,7 +55,7 @@ function displayReadme() {
     if (SpreadsheetApp.getActive().getSheets().length == 1) {
       placeHolderSheet = SpreadsheetApp.getActive().insertSheet();
     }
-    var sheetToRemove = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_README_SHEET_NAME);
+    var sheetToRemove = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_README_SHEET_NAME);
       if(sheetToRemove) {
         // If exist remove from spreadsheet
         SpreadsheetApp.getActiveSpreadsheet().deleteSheet(sheetToRemove);
@@ -66,23 +66,23 @@ function displayReadme() {
     var settingsSheet = getSettingsSheet();
     if (settingsSheet) {
       var languageFound = settingsSheet.getRange(2, 2).getValue();
-      sheetREADMESource = sheetSource.getSheetByName(WISH_TALLY_README_SHEET_NAME+"-"+languageFound);
+      sheetREADMESource = sheetSource.getSheetByName(WARP_TALLY_README_SHEET_NAME+"-"+languageFound);
     }
     if (sheetREADMESource) {
       // Found language
     } else {
       // Default
-      sheetREADMESource = sheetSource.getSheetByName(WISH_TALLY_README_SHEET_NAME);
+      sheetREADMESource = sheetSource.getSheetByName(WARP_TALLY_README_SHEET_NAME);
     }
 
-    sheetREADMESource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WISH_TALLY_README_SHEET_NAME);
+    sheetREADMESource.copyTo(SpreadsheetApp.getActiveSpreadsheet()).setName(WARP_TALLY_README_SHEET_NAME);
 
     // Remove placeholder if available
     if(placeHolderSheet) {
       // If exist remove from spreadsheet
       SpreadsheetApp.getActiveSpreadsheet().deleteSheet(placeHolderSheet);
     }
-    var sheetREADME = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_README_SHEET_NAME);
+    var sheetREADME = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_README_SHEET_NAME);
     // Refresh Contents Links
     var hyperlinkColumn = 1;
     var contentsAvailable = sheetREADME.getRange(13, hyperlinkColumn).getValue();
@@ -112,7 +112,7 @@ function generateRichTextLinks(sheet, contentsAvailable, contentsStartIndex, hyp
     var valueRange = valueRanges[i][0];
     var linkURL = "";
     if (isBookmarkReference) {
-      // Used in Characters and Weapons
+      // Used in Characters and Light Cones
       var bookmarkValue = referenceRanges[i][0];
       if (valueRange.includes("#gid=")) {
         // Meaning that the cell does not have a value

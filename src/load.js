@@ -1,10 +1,10 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function getSourceDocument() {
   // Due to the nature of the document, when new contents is being added to the source. It would be disabled from access, which this function will try and load a message or backup document for the user.
-  var sheetRedirectSource = SpreadsheetApp.openById(WISH_TALLY_SHEET_SOURCE_REDIRECT_ID);
+  var sheetRedirectSource = SpreadsheetApp.openById(WARP_TALLY_SHEET_SOURCE_REDIRECT_ID);
   var isSourceAvailable = sheetRedirectSource.getRange("B6").getValue();
   var sheetSource = null;
   if (isSourceAvailable == 'YES') {

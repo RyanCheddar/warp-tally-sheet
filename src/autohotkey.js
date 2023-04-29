@@ -1,6 +1,6 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function clearAHK() {
   var autoHotkeySheet = SpreadsheetApp.getActive().getSheetByName(AUTOHOTKEY_SHEET_NAME);
@@ -40,21 +40,21 @@ function convertAHK() {
     clearOverrideAHK();
     var banner = autoHotkeySheet.getRange(1, 2).getValue();
     var iLastRow = null;
-    var lastWishDateAndTimeString = null;
-    var lastWishDateAndTime = null;
+    var lastWarpDateAndTimeString = null;
+    var lastWarpDateAndTime = null;
     
     var bannerSheet = SpreadsheetApp.getActive().getSheetByName(banner);
     if (bannerSheet) {
       var iLastRow = bannerSheet.getRange(2, 5, bannerSheet.getLastRow(), 1).getValues().filter(String).length;
       if (iLastRow && iLastRow != 0 ) {
         iLastRow++;
-        lastWishDateAndTimeString = bannerSheet.getRange("E" + iLastRow).getValue();
-        if (lastWishDateAndTimeString) {
-          autoHotkeySheet.getRange(1,3).setValue("Last wish: "+lastWishDateAndTimeString);
-          lastWishDateAndTimeString = lastWishDateAndTimeString.split(" ").join("T");
-          lastWishDateAndTime = new Date(lastWishDateAndTimeString+".000Z");
+        lastWarpDateAndTimeString = bannerSheet.getRange("E" + iLastRow).getValue();
+        if (lastWarpDateAndTimeString) {
+          autoHotkeySheet.getRange(1,3).setValue("Last warp: "+lastWarpDateAndTimeString);
+          lastWarpDateAndTimeString = lastWarpDateAndTimeString.split(" ").join("T");
+          lastWarpDateAndTime = new Date(lastWarpDateAndTimeString+".000Z");
         } else {
-          autoHotkeySheet.getRange(1,3).setValue("No previous wishes");
+          autoHotkeySheet.getRange(1,3).setValue("No previous warpes");
         }
       } else {
         autoHotkeySheet.getRange(1,3).setValue("");
@@ -131,7 +131,7 @@ function convertAHK() {
             autoHotkeySheet.getRange(4 +i,4).setValue("");
           }
           autoHotkeySheet.getRange(4 + groupIndex,2,3,1).mergeVertically();
-          if (dateAndTime <= lastWishDateAndTime) {
+          if (dateAndTime <= lastWarpDateAndTime) {
             autoHotkeySheet.getRange(4 + groupIndex,2).setFormula('=CONCATENATE(CHAR(128503)," STOPPED date and time is older than banner")');
             break;
           } else {
@@ -171,12 +171,12 @@ function importAHK() {
         //iAHKLastRow++;
 
         // Used to prevent lag when applying numberformat, must be done before entering data
-        var wishHistoryNumberOfColumn = bannerSheet.getLastColumn();
+        var warpHistoryNumberOfColumn = bannerSheet.getLastColumn();
         // Reduce two column due to paste and override
-        var wishHistoryNumberOfColumnWithFormulas = wishHistoryNumberOfColumn - 2;
+        var warpHistoryNumberOfColumnWithFormulas = warpHistoryNumberOfColumn - 2;
 
         var lastRowWithoutTitle = bannerSheet.getMaxRows() + iAHKLastRow;
-        for (var i = 3; i <= wishHistoryNumberOfColumn; i++) {
+        for (var i = 3; i <= warpHistoryNumberOfColumn; i++) {
           // Apply formatting for cells
           var numberFormatCell = bannerSheet.getRange(2, i).getNumberFormat();
           bannerSheet.getRange(2, i, lastRowWithoutTitle, 1).setNumberFormat(numberFormatCell);
@@ -188,8 +188,8 @@ function importAHK() {
         //bannerSheet.insertRowAfter(1);
         clearOverrideAHK();
         
-       // addFormulaByWishHistoryName(banner); // lags the sheet
-        sortWishHistoryByName(banner);
+       // addFormulaByWarpHistoryName(banner); // lags the sheet
+        sortWarpHistoryByName(banner);
         var message = 'Imported to '+banner;
         var title = 'Complete';
         SpreadsheetApp.getActiveSpreadsheet().toast(message, title);

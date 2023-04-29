@@ -1,6 +1,6 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 function createWeeklyTrigger(functionName, day, hour, minutes) {
   ScriptApp.newTrigger(functionName)
@@ -69,10 +69,10 @@ function sortRangesTriggered() {
   if (settingsSheet) {
     settingsSheet.getRange("E29").setValue(new Date());
   }
-  sortCharacterEventWishHistory();
-  sortPermanentWishHistory();
-  sortWeaponEventWishHistory();
-  sortNoviceWishHistory();
+  sortCharacterEventWarpHistory();
+  sortRegularWarpHistory();
+  sortLightconeEventWarpHistory();
+  sortBeginnerWarpHistory();
   if (settingsSheet) {
     settingsSheet.getRange("E30").setValue(new Date());
   }

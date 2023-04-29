@@ -1,6 +1,6 @@
 /*
  * Version 3.61 made by yippym - 2023-02-57 23:00
- * https://github.com/Yippy/wish-tally-sheet
+ * https://github.com/Yippy/warp-tally-sheet
  */
 const CACHED_LTUID_PROPERTY = "cachedLTUID_" + SpreadsheetApp.getActiveSpreadsheet().getId();
 const CACHED_LTOKEN_PROPERTY = "cachedLTOKEN_" + SpreadsheetApp.getActiveSpreadsheet().getId();
@@ -44,8 +44,8 @@ function isUidCorrect(userInput) {
   return isValid;
 }
 
-// Allow flexibility in rolling out new changes, if weapons needs to run seperately for example.
-function importHoYoLabWeaponsButtonScript() {
+// Allow flexibility in rolling out new changes, if light cones needs to run seperately for example.
+function importHoYoLabLightconesButtonScript() {
   importHoYoLabCharactersButtonScript();
 }
 
@@ -59,9 +59,9 @@ function importHoYoLabCharactersButtonScript() {
       message += `\nHoYoLab Token (ltoken): '`+ltokenInput+`'`;
     }
     if (uidInput) {
-      message += `\nGenshin Impact UID: '`+uidInput+`'\n\nPress 'Yes' to sync data.`;
+      message += `\nHonkai Star Rail UID: '`+uidInput+`'\n\nPress 'Yes' to sync data.`;
     } else {
-      message += `\nGenshin Impact UID: '`+uidInput+`'\n\nPress 'Yes' to use previous saved HoYoLab UID (ltuid).`;
+      message += `\nHonkai Star Rail UID: '`+uidInput+`'\n\nPress 'Yes' to use previous saved HoYoLab UID (ltuid).`;
     }
     message += `\nPress 'No' to begin editing HoYoLab UID (ltuid).\nPress 'Cancel' to check tutorial.`;
 
@@ -129,7 +129,7 @@ function displayHoYoLabLtoken(ltuidInput, ltokenInput) {
 function importHoYoLabCacheUid(ltuidInput, ltokenInput) {
   var uidInput = getCachedUidInput();
   if (uidInput && uidInput.length > 0) {
-    const button = displayUserAlert("Import from HoYoLab", `Previous saved\nGenshin Impact UID '`+ uidInput+`'\n\nPress 'No' to begin editing Genshin Impact UID\nPress 'Yes' to use previous saved Genshin Impact UID`, SpreadsheetApp.getUi().ButtonSet.YES_NO);
+    const button = displayUserAlert("Import from HoYoLab", `Previous saved\nHonkai Star Rail UID '`+ uidInput+`'\n\nPress 'No' to begin editing Honkai Star Rail UID\nPress 'Yes' to use previous saved Honkai Star Rail UID`, SpreadsheetApp.getUi().ButtonSet.YES_NO);
     if (button == SpreadsheetApp.getUi().Button.YES) {
       attemptHoYoLab(ltuidInput, ltokenInput, uidInput);
     } else if (button == SpreadsheetApp.getUi().Button.NO) {
@@ -141,7 +141,7 @@ function importHoYoLabCacheUid(ltuidInput, ltokenInput) {
 }
 
 function displayHoYoLabUid(ltuidInput, ltokenInput) {
-  const result = displayUserPrompt("Import from HoYoLab", `Enter Genshin Impact UID to proceed.\n`,SpreadsheetApp.getUi().ButtonSet.YES_NO);
+  const result = displayUserPrompt("Import from HoYoLab", `Enter Honkai Star Rail UID to proceed.\n`,SpreadsheetApp.getUi().ButtonSet.YES_NO);
   var button = result.getSelectedButton();
   if (button == SpreadsheetApp.getUi().Button.YES) {
     var uidInput = result.getResponseText();
@@ -149,7 +149,7 @@ function displayHoYoLabUid(ltuidInput, ltokenInput) {
       setCachedUidInput(uidInput);
       attemptHoYoLab(ltuidInput, ltokenInput, uidInput);
     } else {
-      displayUserAlert("Import from HoYoLab", "Genshin Impact UID is invalid, you have entered '"+uidInput+"'.", SpreadsheetApp.getUi().ButtonSet.OK);
+      displayUserAlert("Import from HoYoLab", "Honkai Star Rail UID is invalid, you have entered '"+uidInput+"'.", SpreadsheetApp.getUi().ButtonSet.OK);
     }
   }
 }
@@ -214,7 +214,7 @@ function attemptHoYoLab(ltuidInput, ltokenInput, uidInput) {
     SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
 
     var characters = {};
-    var weapons = {};
+    var light_cones = {};
     var avatars = response.data.avatars;
     for (var i = 0; i < avatars.length; i++) {
       var character = avatars[i];
@@ -223,51 +223,51 @@ function attemptHoYoLab(ltuidInput, ltokenInput, uidInput) {
         "id": character.id,
         "level": character.level,
         "friendship_level": character.fetter,
-        "owned": character.actived_constellation_num+1,
+        "owned": character.actived_eidolon_num+1,
       };
-      if (character.weapon) {
-        var weaponName = character.weapon.name;
-        var weaponData =  {
-          "name": weaponName,
-          "level": character.weapon.level,
-          "refinement_level": character.weapon.affix_level
+      if (character.lightcone) {
+        var lightconeName = character.lightcone.name;
+        var lightconeData =  {
+          "name": lightconeName,
+          "level": character.lightcone.level,
+          "refinement_level": character.lightcone.affix_level
         };
-        characterData["weapon"] = weaponData;
-        var foundWeapon = weapons[weaponName];
-        if (foundWeapon) {
-          if (weaponData["refinement_level"] > foundWeapon["refinement_level"]) {
-            weapons[weaponName] = weaponData;
-          } else if (weaponData["level"] > foundWeapon["level"]) {
-            weapons[weaponName] = weaponData;
+        characterData["lightcone"] = lightconeData;
+        var foundLightcone = light_cones[lightconeName];
+        if (foundLightcone) {
+          if (lightconeData["refinement_level"] > foundLightcone["refinement_level"]) {
+            light_cones[lightconeName] = lightconeData;
+          } else if (lightconeData["level"] > foundLightcone["level"]) {
+            light_cones[lightconeName] = lightconeData;
           }
         } else {
-          weapons[weaponName] = weaponData;
+          light_cones[lightconeName] = lightconeData;
         }
 
       }
       characters[characterName] = characterData;
     }
-    processCharacters(characters, weapons);
+    processCharacters(characters, light_cones);
   }
 }
 
-function processCharacters(characters, weapons) {
-  var constellationSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_CHARACTERS_SHEET_NAME);
+function processCharacters(characters, light_cones) {
+  var eidolonSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_CHARACTERS_SHEET_NAME);
   var sheetsUpdated = [];
-  if (constellationSheet) {
+  if (eidolonSheet) {
     var title = "Import from HoYoLab";
-    var message = "Saving data to "+WISH_TALLY_CHARACTERS_SHEET_NAME+" sheet.";
+    var message = "Saving data to "+WARP_TALLY_CHARACTERS_SHEET_NAME+" sheet.";
     SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
-    syncCollectionSettings(constellationSheet, characters, WISH_TALLY_CHARACTERS_SHEET_NAME);
-    sheetsUpdated.push(WISH_TALLY_CHARACTERS_SHEET_NAME);
+    syncCollectionSettings(eidolonSheet, characters, WARP_TALLY_CHARACTERS_SHEET_NAME);
+    sheetsUpdated.push(WARP_TALLY_CHARACTERS_SHEET_NAME);
   }
-  var constellationSheet = SpreadsheetApp.getActive().getSheetByName(WISH_TALLY_WEAPONS_SHEET_NAME);
-  if (constellationSheet) {
+  var eidolonSheet = SpreadsheetApp.getActive().getSheetByName(WARP_TALLY_LIGHTCONES_SHEET_NAME);
+  if (eidolonSheet) {
     var title = "Import from HoYoLab";
-    var message = "Saving data to "+WISH_TALLY_WEAPONS_SHEET_NAME+" sheet.";
+    var message = "Saving data to "+WARP_TALLY_LIGHTCONES_SHEET_NAME+" sheet.";
     SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
-    syncCollectionSettings(constellationSheet, weapons, WISH_TALLY_WEAPONS_SHEET_NAME);
-    sheetsUpdated.push(WISH_TALLY_WEAPONS_SHEET_NAME);
+    syncCollectionSettings(eidolonSheet, light_cones, WARP_TALLY_LIGHTCONES_SHEET_NAME);
+    sheetsUpdated.push(WARP_TALLY_LIGHTCONES_SHEET_NAME);
   }
 
   var title = "Import from HoYoLab";
@@ -278,25 +278,25 @@ function processCharacters(characters, weapons) {
   SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
 }
 
-function syncCollectionSettings(constellationsSheet, objects, sheetName) {
-  var maxColumns = constellationsSheet.getMaxColumns();
-  var columnValue = constellationsSheet.getRange(1, 2).getValue();
-  var nameRowValue = constellationsSheet.getRange(1, 10).getValue();
+function syncCollectionSettings(eidolonsSheet, objects, sheetName) {
+  var maxColumns = eidolonsSheet.getMaxColumns();
+  var columnValue = eidolonsSheet.getRange(1, 2).getValue();
+  var nameRowValue = eidolonsSheet.getRange(1, 10).getValue();
 
   if (columnValue > 0) {
-    var startValue = constellationsSheet.getRange(1, columnValue).getValue();
-    var nextValue = constellationsSheet.getRange(1, columnValue+1).getValue();
-    var userInputColumnValue = constellationsSheet.getRange(1, columnValue+2).getValue();
-    var saveRowsValue = constellationsSheet.getRange(1, columnValue+4).getValue();
-    var startSaveRowValue = constellationsSheet.getRange(1, 11).getValue();
+    var startValue = eidolonsSheet.getRange(1, columnValue).getValue();
+    var nextValue = eidolonsSheet.getRange(1, columnValue+1).getValue();
+    var userInputColumnValue = eidolonsSheet.getRange(1, columnValue+2).getValue();
+    var saveRowsValue = eidolonsSheet.getRange(1, columnValue+4).getValue();
+    var startSaveRowValue = eidolonsSheet.getRange(1, 11).getValue();
     for (var c = startValue; c <= maxColumns; c += nextValue) {
-      var nameValue = constellationsSheet.getRange(nameRowValue, c).getValue();
+      var nameValue = eidolonsSheet.getRange(nameRowValue, c).getValue();
       if (nameValue != "") {
         var foundObject = objects[nameValue];
         if (foundObject) {
-          var saveValues = constellationsSheet.getRange(startSaveRowValue, c - userInputColumnValue,saveRowsValue,1).getValues();
-          var totalValue = constellationsSheet.getRange(startSaveRowValue-1, c - userInputColumnValue).getValue();
-          if (sheetName == WISH_TALLY_CHARACTERS_SHEET_NAME) {
+          var saveValues = eidolonsSheet.getRange(startSaveRowValue, c - userInputColumnValue,saveRowsValue,1).getValues();
+          var totalValue = eidolonsSheet.getRange(startSaveRowValue-1, c - userInputColumnValue).getValue();
+          if (sheetName == WARP_TALLY_CHARACTERS_SHEET_NAME) {
             if (10000005 != foundObject.id) {
               var override = saveValues[0][0];
               if (override > 0) {
@@ -317,10 +317,10 @@ function syncCollectionSettings(constellationsSheet, objects, sheetName) {
               saveValues[0] = [override];
             }
             saveValues[1] = [foundObject.level]
-            if (foundObject.weapon) {
-              saveValues[10] = [foundObject.weapon.name]
+            if (foundObject.lightcone) {
+              saveValues[10] = [foundObject.lightcone.name]
             }
-          } else if (sheetName == WISH_TALLY_WEAPONS_SHEET_NAME) {
+          } else if (sheetName == WARP_TALLY_LIGHTCONES_SHEET_NAME) {
             var override = saveValues[0][0];
             if ((override + totalValue) < foundObject.refinement_level) {
               override = foundObject.refinement_level - totalValue;
@@ -331,7 +331,7 @@ function syncCollectionSettings(constellationsSheet, objects, sheetName) {
             saveValues[1] = [foundObject.level];
             saveValues[2] = [foundObject.refinement_level];
           }
-          constellationsSheet.getRange(startSaveRowValue, c - userInputColumnValue,saveValues.length,1).setValues(saveValues);
+          eidolonsSheet.getRange(startSaveRowValue, c - userInputColumnValue,saveValues.length,1).setValues(saveValues);
         }
       }
     }
