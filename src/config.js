@@ -63,10 +63,10 @@ var UID_SERVER = {
   1: { "is_global": false, "code": "cn_gf01", "url": HOYOLAB_GAME_RECORD_URL_CHINA, "salt": HOYOLAB_GAME_RECORD_DS_SALT_CHINA, "x-rpc-app_version": "2.11.1", "x-rpc-client_type": "5" } ,
   2: { "is_global": false, "code": "cn_gf01", "url": HOYOLAB_GAME_RECORD_URL_CHINA, "salt": HOYOLAB_GAME_RECORD_DS_SALT_CHINA, "x-rpc-app_version": "2.11.1", "x-rpc-client_type": "5" },
   5: { "is_global": false, "code": "cn_qd01", "url": HOYOLAB_GAME_RECORD_URL_CHINA, "salt": HOYOLAB_GAME_RECORD_DS_SALT_CHINA, "x-rpc-app_version": "2.11.1", "x-rpc-client_type": "5" },
-  6: { "is_global": true, "code": "os_usa", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
-  7: { "is_global": true, "code": "os_euro", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
+  6: { "is_global": true, "code": "prod_official_usa", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
+  7: { "is_global": true, "code": "prod_official_euro", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
   8: { "is_global": true, "code": "prod_official_asia", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4" },
-  9: { "is_global": true, "code": "os_cht", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4"},
+  9: { "is_global": true, "code": "prod_official_cht", "url": HOYOLAB_GAME_RECORD_URL, "salt": HOYOLAB_GAME_RECORD_DS_SALT, "x-rpc-app_version": "1.5.0", "x-rpc-client_type": "4"},
 };
 
 // Warp Tally Const
