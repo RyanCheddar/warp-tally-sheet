@@ -178,7 +178,7 @@ function checkPages(urlForWarpHistory, bannerSheet, bannerName, bannerSettings, 
   var page = 1;
   var queryBannerCode = bannerSettings["gacha_type"];
   var numberOfWarpPerPage = 6;
-  var urlForBanner = urlForWishHistory+"&game_biz=hkrpg_global"+"&gacha_type="+queryBannerCode+"&size="+numberOfWishPerPage;
+  var urlForBanner = urlForWarpHistory+"&game_biz=hkrpg_global"+"&gacha_type="+queryBannerCode+"&size="+numberOfWarpPerPage;
   var failed = 0;
   var is_done = false;
   var end_id = 0;
